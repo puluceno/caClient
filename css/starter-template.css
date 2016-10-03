@@ -1,0 +1,23 @@
+body {
+  padding-top: 50px;
+}
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+.filters{
+	padding-bottom: 25px;
+	text-align: center;
+}
+
+input[type=checkbox] {
+    transform: scale(1.5);
+    -ms-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    padding: 10px;
+}
+
+input[type=text]{
+
+}
