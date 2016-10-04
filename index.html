@@ -1,4 +1,5 @@
-<html ng-app="ca" xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html ng-app="caSearch">
 <head>
   <title>Busca de CAs</title>
   <meta charset="utf-8" />
@@ -16,41 +17,71 @@
     </div>
 
     <div class="container">
+    <form name="searchForm" ng-controller="SearchController as searchCtrl" ng-submit="searchCtrl.submitForm()" novalidate>
       <div class="col-sm-4 filters">
-        <p>Número do CA:</p><input type="text" name="caNumber" />
+        <p>Número do CA:</p>
+        <input ng-model="searchCtrl.search.number" maxlength="5" class="form-control" type="text" placeholder="Número exato do CA" required>
       </div>
 
       <div class="col-sm-4 filters">
-        <p>Nome da Empresa:</p><input type="text" name="company" />
+        <p>Nome da Empresa:</p>
+        <input ng-model="searchCtrl.search.company" class="form-control" type="text" placeholder="Nome da Empresa. Ex: Fiat" />
       </div>
 
       <div class="col-sm-4 filters">
-        <p>Aprovado para:</p><input type="text" name="approvedFor" />
+        <p>Aprovado para:</p>
+        <input ng-model="searchCtrl.search.approvedFor" class="form-control" type="text" placeholder="Finalidade para qual o equipamento foi aprovado" />
       </div>
 
       <div class="col-sm-4 filters">
-        <p>Validade do CA:</p>Válido: <input type="checkbox" name="valid"/> Vencido: <input type="checkbox" name="expired" />
+        <p>Validade do CA:</p>
+        <span>Válido: </span><input type="checkbox" name="valid" ng-model="searchCtrl.search.status"/>
+        <span>Vencido:</span> <input type="checkbox" name="expired" ng-model="searchCtrl.search.status"/>
       </div>
 
       <div class="col-sm-4 filters">
-        <p>Equipamento:</p><input type="text" name="equipment" />
+        <p>Equipamento:</p>
+        <input ng-model="searchCtrl.search.equipment" class="form-control" type="text" placeholder="Nome do equipamento. Ex: Luva" />
       </div>
 
       <div class="col-sm-2 col-sm-offset-1 filters">
       <p></p>
-        <a class="btn btn-primary btn-lg center-block" href="#" role="button">Buscar CA &raquo;</a>
+        <input class="btn btn-primary btn-lg center-block" type="submit" value="Buscar CA&raquo;"/>
       </div>
+      </form>
     </div>
 
-    <div style="height: 500px; border-style: solid;"></div>
+    <div class="table-responsive" style="border-style: solid;" ng-controller="CaController as ca">
+    <table class="table">
+    <thead style="font-weight: bold;">
+    	<td>Número</td>
+    	<td>Validade</td>
+    	<td>Situação</td>
+    	<td>Empresa</td>
+    	<td>Equipamento</td>
+    	<td>Descrição</td>
+    </thead>
+    	<tr ng-repeat="unit in ca.units">
+    	<td>{{unit.number}}</td>
+    	<td>{{unit.date}}</td>
+    	<td class="text-capitalize">{{unit.status | lowercase}}</td>
+    	<td class="text-capitalize" title={{unit.company}}>{{unit.company | lowercase | limitTo:20}}{{unit.company.length > 20 ? '...' : ''}}</td>
+    	<td class="text-capitalize" title={{unit.equipment}}>{{unit.equipment | lowercase | limitTo:20}}{{unit.description.length > 20 ? '...' : ''}}</td>
+    	<td class="text-capitalize" title={{unit.description}}>{{unit.description | lowercase | limitTo:35}}{{unit.description.length > 35 ? '...' : ''}}</td>
+    	</tr>
+    </table>
+
+
+    </div>
 
     <p style="padding-top: 25px;"><a class="btn btn-primary btn-lg" href="#" role="button">Gerar PDF &raquo;</a></p>
   </div>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js" type="text/javascript"/>
-<script src="js/bootstrap.min.js" type="text/javascript"/>
-<script src="js/angular.min.js" type="text/javascript"/>
-<script src="js/angular-route.min.js" type="text/javascript"/>
-<script src="js/angular-locale_pt-br.js" type="text/javascript"/>
+<script src="js/jquery.min.js" type="text/javascript"></script>
+<script src="js/bootstrap.min.js" type="text/javascript"></script>
+<script src="js/angular.min.js" type="text/javascript"></script>
+<script src="js/angular-route.min.js" type="text/javascript"></script>
+<script src="js/angular-locale_pt-br.js" type="text/javascript"></script>
+<script src="js/modules/app.js" type="text/javascript"></script>
 </body>
 </html>

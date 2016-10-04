@@ -1,5 +1,6 @@
 body {
   padding-top: 50px;
+  font-size: 18px;
 }
 .starter-template {
   padding: 40px 15px;
@@ -18,6 +19,14 @@ input[type=checkbox] {
     padding: 10px;
 }
 
-input[type=text]{
+td{
+	padding: 5px 5px 0px 5px;
+}
 
+.ng-invalid.ng-dirty{
+  border-color:red;
+}
+
+.ng-valid.ng-dirty{
+  border-color: green
 }
