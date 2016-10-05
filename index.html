@@ -15,7 +15,7 @@
 				<h1>Busca de CAs</h1>
 			</div>
 			<div class="container">
-			{{error}}
+				{{error}}
 				<form name="searchForm" ng-submit="caCtrl.submitForm()" novalidate>
 					<div class="col-sm-4 filters">
 						<p>Número do CA:</p>
@@ -44,25 +44,31 @@
 					</div>
 				</form>
 			</div>
-			<div class="table-responsive" style="border-style: solid;">
+			<div class="table-responsive">
 				<table class="table table-striped">
 					<thead style="font-weight: bold;">
-						<td>Número</td>
-						<td>Validade</td>
-						<td>Situação</td>
-						<td>Empresa</td>
-						<td>Equipamento</td>
-						<td>Descrição</td>
+						<th><a href="" ng-click="caCtrl.orderBy('number')">Número</a></th>
+						<th><a href="" ng-click="caCtrl.orderBy('date')">Validade</a></th>
+						<th><a href="" ng-click="caCtrl.orderBy('status')">Situação</a></th>
+						<th><a href="" ng-click="caCtrl.orderBy('company')">Empresa</a></th>
+						<th><a href="" ng-click="caCtrl.orderBy('equipment')">Equipamento</a></th>
+						<th><a href="" ng-click="caCtrl.orderBy('description')">Descrição</a></th>
 					</thead>
-					<tr ng-repeat="ca in cas">
+					<tr ng-repeat="ca in cas | orderBy:orderCriteria:orderDirection">
 						<td>{{ca.number}}</td>
 						<td>{{ca.date}}</td>
 						<td class="text-capitalize">{{ca.status | lowercase}}</td>
 						<td class="text-capitalize" title={{ca.company}}>{{ca.company | lowercase | limitTo:20}}{{ca.company.length > 20 ? '...' : ''}}</td>
 						<td class="text-capitalize" title={{ca.equipment}}>{{ca.equipment | lowercase | limitTo:20}}{{ca.description.length > 20 ? '...' : ''}}</td>
-						<td class="text-capitalize" title={{ca.description}}>{{ca.description | lowercase | limitTo:35}}{{ca.description.length > 35 ? '...' : ''}}</td>
+						<td title={{ca.description}}>{{ca.description | limitTo:35}}{{ca.description.length > 35 ? '...' : ''}}</td>
 					</tr>
 				</table>
+				<pagination
+					ng-model="currentPage"
+					total-items="todos.length"
+					max-size="maxSize"
+					boundary-links="true">
+				</pagination>
 			</div>
 			<p style="padding-top: 25px;"><a class="btn btn-primary btn-lg" href="#" role="button">Gerar PDF &raquo;</a></p>
 		</div>
