@@ -30,3 +30,13 @@ td{
 .ng-valid.ng-dirty{
   border-color: green
 }
+
+.bold {
+font-weight: bold;
+}
+
+@media (min-width: 768px){
+.modal-dialog {
+    width: 900px;
+    margin: 30px auto;
+}
