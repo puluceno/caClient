@@ -9,26 +9,10 @@
             $scope.query.status.invalid = false;
             $scope.query.status.valid = false;
             $scope.cas = [];
-            $scope.fetching = false;
             $scope.index = 0;
         };
 
         this.initialize();
-
-        this.generatePDF = function(id) {
-            console.log(id);
-            $http({
-                url: "http://192.168.25.11:4567/ca/pdf",
-                method: "GET",
-								params: {'id':id}
-            }).success(function(data) {
-                $scope.error = "";
-                $scope.fetching = false;
-            }).error(function() {
-                $scope.error = "Aconteceu um erro!"
-                $scope.fetching = false;
-            });
-        };
 
         this.submitForm = function() {
             $scope.fetching = true;
@@ -38,16 +22,18 @@
             if ($scope.query.company != null)
                 $scope.query.company = $scope.query.company.toUpperCase();
             if ($scope.query.status.valid) {
-                $scope.query.status = "VALIDO";
+                $scope.query.status = "VÁLIDO";
             } else if ($scope.query.status.invalid) {
                 $scope.query.status = "VENCIDO";
-            }
-            if (($scope.query.status.invalid && $scope.query.status.valid) || (!$scope.query.status.invalid && !$scope.query.status.valid)) {
+            } else if (($scope.query.status.invalid && $scope.query.status.valid) || (!$scope.query.status.invalid && !$scope.query.status.valid)) {
+                console.log($scope.query.status);
                 $scope.query.status = null;
             }
 
+            console.log($scope.query.status);
+
             $http({
-                url: "http://192.168.25.11:4567/ca",
+                url: "http://localhost:4567/ca",
                 method: "GET",
                 params: $scope.query
             }).success(function(data) {
@@ -66,10 +52,6 @@
         this.orderBy = function(field) {
             $scope.orderCriteria = field;
             $scope.orderDirection = !$scope.orderDirection;
-        };
-
-        this.clear = function() {
-            ca = {};
         };
 
         app.directive("detailModal", function() {

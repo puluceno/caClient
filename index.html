@@ -43,9 +43,12 @@
                         <input ng-model="query.equipment" class="form-control" type="text" placeholder="Nome do equipamento. Ex: Luva"/>
                     </div>
                     <div class="col-sm-2 col-sm-offset-1 filters">
-                        <p></p>
-                        <input class="btn btn-primary btn-lg center-block" type="submit" value="Buscar CA&raquo;"/>
-                        <span class="b text-danger">{{error}}</span>
+                        <button class="btn btn-primary btn-lg center-block" type="submit" ng-disabled="fetching">Buscar CA&raquo;</button>
+
+                    </div>
+                    <div class="col-sm-4 text-center" ng-if="cas.length>0 || error">
+                      <span class="b text-danger" ng-hide="cas.length>0">{{error}}</span>
+                      <span class="b text-info" ng-hide="error.length>0">{{cas.length}} CAs encontrados</span>
                     </div>
                 </form>
             </div>
@@ -79,7 +82,10 @@
                         <td class="text-capitalize" title={{ca.equipment}}>{{::ca.equipment | lowercase | limitTo:20}}{{ca.description.length > 20 ? '...' : ''}}</td>
                         <td title={{ca.description}}>{{::ca.description | limitTo:35}}{{ca.description.length > 35 ? '...' : ''}}</td>
                         <td>
-                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogTestDialog{{$index}}" ng-click="caCtrl.clear()">Detalhes</button>
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogTestDialog{{$index}}">Detalhes</button>
+                        </td>
+                        <td>
+                            <a class="btn btn-primary" type="button" href="http://localhost:4567/ca/pdf?id={{(ca._id.$oid)}}">Gerar PDF &raquo;</a>
                             <!--Modal begins-->
                             <div class="modal" id="dialogTestDialog{{$index}}" tabindex="-1" role="dialog" aria-labelledby="executionOptionLabel" aria-hidden="true">
                                 <div class="modal-dialog">
@@ -102,44 +108,44 @@
                                                     <td colspan="2">
                                                         <p>
                                                             <b>Validade:</b>
-                                                            {{ca.date}}</p>
+                                                            {{::ca.date}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2">
                                                         <p>
                                                             <b>Nº do Processo:</b>
-                                                            {{ca.processNumber}}</p>
+                                                            {{::ca.processNumber}}</p>
                                                     </td>
                                                 </tr>
                                                 <td style="width: 42%;">
                                                     <b>CNPJ:</b>
-                                                    {{ca.cnpj}}
+                                                    {{::ca.cnpj}}
                                                 </td>
                                                 <td>
                                                     <span class="text-capitalize">
                                                         <b>Razão Social:</b>
-                                                        {{ca.company | lowercase}}</span>
+                                                        {{::ca.company | lowercase}}</span>
                                                 </td>
                                                 <tr>
                                                     <td colspan="2 ">
                                                         <p>
                                                             <b>Natureza:</b>
-                                                            {{ca.origin}}</p>
+                                                            {{::ca.origin}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2 ">
                                                         <p class="text-capitalize ">
                                                             <b>Equipamento:</b>
-                                                            {{ca.equipment | lowercase}}</p>
+                                                            {{::ca.equipment | lowercase}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
                                                     <td colspan="2 ">
                                                         <p>
                                                             <b>Descrição:</b>
-                                                            {{ca.description}}</p>
+                                                            {{::ca.description}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -153,21 +159,21 @@
                                                     <td colspan="2 ">
                                                         <p>
                                                             <b>Marcação do CA:</b>
-                                                            {{ca.caLocation}}</p>
+                                                            {{::ca.caLocation}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr ng-show="ca.references.length>1">
                                                     <td colspan="2">
                                                         <p>
                                                             <b>Referências:</b>
-                                                            {{ca.references}}</p>
+                                                            {{::ca.references}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr ng-show="ca.colors.length>1">
                                                     <td colspan="2">
                                                         <p>
                                                             <b>Cores:</b>
-                                                            {{ca.colors}}</p>
+                                                            {{::ca.colors}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -181,21 +187,21 @@
                                                     <td colspan="2">
                                                         <p class="text-capitalize">
                                                             <b>Aprovado Para:</b>
-                                                            {{ca.approvedFor | lowercase}}</p>
+                                                            {{::ca.approvedFor | lowercase}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr ng-show="ca.observation.length>1">
                                                     <td colspan="2">
                                                         <p class="text-capitalize">
                                                             <b>Observação:</b>
-                                                            {{ca.observation}}</p>
+                                                            {{::ca.observation}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr ng-show="ca.restrictions.length>1">
                                                     <td colspan="2">
                                                         <p>
                                                             <b>Restrição:</b>
-                                                            {{ca.restrictions}}</p>
+                                                            {{::ca.restrictions}}</p>
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -207,9 +213,9 @@
                                                                 <th class="text-center">Razão Social</th>
                                                             </thead>
                                                             <tr ng-repeat="report in ca.reports">
-                                                                <td style="max-width: 21%">{{report.reportNumber}}</td>
-                                                                <td style="width: 21%">{{report.laboratoryCNPJ}}</td>
-                                                                <td class="text-capitalize text-left">{{report.laboratoryName | lowercase}}</td>
+                                                                <td style="max-width: 21%">{{::report.reportNumber}}</td>
+                                                                <td style="width: 21%">{{::report.laboratoryCNPJ}}</td>
+                                                                <td class="text-capitalize text-left">{{::report.laboratoryName | lowercase}}</td>
                                                             </tr>
                                                         </table>
                                                     </td>
@@ -220,14 +226,14 @@
                                                             <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
                                                             <b>
                                                                 Normas:</b>
-                                                            {{ca.technicalRules.join(", ")}}</p>
+                                                            {{::ca.technicalRules.join(", ")}}</p>
                                                     </td>
                                                 </tr>
                                             </table>
                                         </div>
                                         <div class="modal-footer">
                                             <p style="padding-right: 10px;" class="text-right">
-                                                <button class="btn btn-primary btn-lg" type="button" data-dismiss="modal" ng-click="caCtrl.generatePDF(ca._id.$oid)">Gerar PDF &raquo;</button>
+                                                <a class="btn btn-primary btn-lg" type="button" href="http://localhost:4567/ca/pdf?id={{(ca._id.$oid)}}">Gerar PDF &raquo;</a>
                                                 <button class="btn btn-primary btn-lg" type="button" data-dismiss="modal">Fechar</button>
                                             </p>
                                         </div>
@@ -239,7 +245,7 @@
                     </tr>
                 </table>
                 <div ng-show="fetching" class="text-center">
-                    <i class="fa fa-spinner fa-spin"></i>
+                    <i class="fa fa-spinner fa-spin fa-3x"></i>
                 </div>
             </div>
         </div>
