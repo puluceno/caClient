@@ -26,11 +26,8 @@
             } else if ($scope.query.status.invalid) {
                 $scope.query.status = "VENCIDO";
             } else if (($scope.query.status.invalid && $scope.query.status.valid) || (!$scope.query.status.invalid && !$scope.query.status.valid)) {
-                console.log($scope.query.status);
                 $scope.query.status = null;
             }
-
-            console.log($scope.query.status);
 
             $http({
                 url: "http://localhost:4567/ca",
