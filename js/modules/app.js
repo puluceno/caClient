@@ -1,7 +1,7 @@
 (function() {
     var app = angular.module('caSearch', []);
 
-    app.controller('CaController', ['$scope', '$http', function($scope, $http) {
+    app.controller('CaController', ['$scope', '$http', '$location', '$window', '$timeout', function($scope, $http, $location, $window, $timeout) {
 
         this.initialize = function() {
             $scope.query = {};
@@ -10,6 +10,22 @@
             $scope.query.status.valid = false;
             $scope.cas = [];
             $scope.index = 0;
+            this.getParams();
+        };
+
+        this.getParams = function() {
+            $http({
+                url: "http://perito2000.linkpc.net:4567/params",
+                method: "GET"
+            }).success(function(data) {
+                $scope.fileUrl = data.fileUrl;
+                $scope.lastUpdated = data.lastUpdated;
+                $scope.error = "";
+                $scope.fetching = false;
+            }).error(function() {
+                $scope.error = "Aconteceu um erro!"
+                $scope.fetching = false;
+            });
         };
 
         this.initialize();
@@ -30,7 +46,7 @@
             }
 
             $http({
-                url: "http://localhost:4567/ca",
+                url: "http://perito2000.linkpc.net:4567/ca",
                 method: "GET",
                 params: $scope.query
             }).success(function(data) {
@@ -51,12 +67,71 @@
             $scope.orderDirection = !$scope.orderDirection;
         };
 
-        app.directive("detailModal", function() {
-            return {
-                restrict: 'E',
-                templateUrl: 'detail-modal.html'
-            };
-        });
+        this.getKey = function(number) {
+            $http({
+                url: "http://perito2000.linkpc.net:4567/ca/key",
+                method: "GET",
+                params: {
+                    "number": number
+                }
+            }).success(function(key) {
+                $window.location.href = "https://consultaca.com/certificado?k=" + key;
+            })
+        };
+
+        this.diffCheck = function(ca) {
+            if ($scope.cas.length > 0) {
+                for (var i = 0; i < $scope.cas.length; i++) {
+                    if ((ca.approvedFor != $scope.cas[i].approvedFor) && (ca.number == $scope.cas[i].number)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        };
+
+        this.updateFileUrl = function() {
+            $scope.fileUrlUpdating = true;
+            $http({
+                url: "http://perito2000.linkpc.net:4567/fileUrl",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                data: $scope.fileUrl
+            }).success(function(data) {
+                $scope.fileUrl = data.fileUrl;
+                $scope.lastUpdated = data.lastUpdated;
+                $scope.error = "";
+                $scope.fileUrlUpdating = false;
+                $scope.fileUrlUpdatedSucess = true;
+                $timeout(function() {
+                    $scope.fileUrlUpdatedSucess = false;
+                }, 8000);
+            }).error(function() {
+                $scope.error = "Aconteceu um erro!"
+                $scope.fileUrlUpdatedSucess = false;
+                $scope.fileUrlUpdating = false;
+            });
+        };
+
+        this.updateDatabase = function() {
+            $scope.databaseUpdating = true;
+            $http({
+                url: "http://perito2000.linkpc.net:4567/updateDatabase",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                }
+            }).success(function(data) {
+                $scope.lastUpdated = data.lastUpdated;
+                $scope.error = "";
+                $scope.databaseUpdating = false;
+            }).error(function() {
+                $scope.databaseUpdating = false;
+                $scope.error = "Aconteceu um erro!"
+            });
+        };
 
     }]);
 })();
