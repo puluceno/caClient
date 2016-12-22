@@ -1,0 +1,36 @@
+<footer class="footer" ng-controller="footerController as footerCtrl">
+    <div class="container">
+        <form name="formFileUrl" class="form-inline small text-center" ng-submit="footerCtrl.updateFileUrl()" novalidate>
+            <span>Arquivo de atualização:
+            </span>
+            <input ng-model="fileUrl" class="form-control fileUrlInput" type="text"/>
+            <button class="btn btn-primary btn-sm" type="submit" ng-disabled="fileUrlUpdating">Atualizar&raquo;</button>
+            <span ng-show="fileUrlUpdatedSucess" class="text-success">
+                Endereço atualizado!
+            </span>
+        </form>
+        <div class="text-center text-muted small">
+            <div class="fileUpload btn btn-primary btn-sm" ng-hide="uploadingCA">
+                <i class="fa fa-upload" aria-hidden="true"></i>
+                <span>Adicionar um CA ao sistema</span>
+                <input class="upload" type="file" file-model="newCA" accept='.pdf' onchange="angular.element(this).scope().footerCtrl.uploadCA()"/>
+            </div>
+            <i class="fa fa-spinner fa-spin fa" ng-show="uploadingCA"></i>
+            <span ng-show="uploadSuccess" class="b text-primary">{{uploadMessage}}</span>
+            <span>Existem
+                {{CAcount}}
+                CA no sistema.
+            </span>
+            <span>
+                Dados atualizados em:
+            </span>{{lastUpdated}}
+            <button class="btn btn-primary btn-xs" type="button" ng-disabled="databaseUpdating" ng-click="footerCtrl.updateDatabase()" ng-hide="databaseUpdating">Atualizar agora!&raquo;</button>
+            <i class="fa fa-spinner fa-spin fa" ng-show="databaseUpdating"></i>
+            <span class="b text-danger" ng-show="error.length>0">{{error}}</span>
+            <span ng-show="databaseUpdateSuccess" class="text-success">
+                {{updateCount}}
+                CA adicionados ao sistema.
+            </span>
+        </div>
+    </div>
+</footer>

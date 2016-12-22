@@ -1,0 +1,240 @@
+<div ng-controller="caController as caCtrl">
+    <div class="starter-template">
+        <h1>Busca de CAs</h1>
+    </div>
+    <div class="container">
+        <form name="searchForm" ng-submit="caCtrl.submitForm()" novalidate>
+            <div class="col-sm-4 filters">
+                <p>Número do CA:</p>
+                <input ng-model="query.number" maxlength="5" class="form-control" type="text" placeholder="Número exato ou parcial do CA"/>
+            </div>
+            <div class="col-sm-4 filters">
+                <p>Nome da Empresa:</p>
+                <input ng-model="query.company" class="form-control" type="text" placeholder="Nome da Empresa. Ex: 3M"/>
+            </div>
+            <div class="col-sm-4 filters">
+                <p>Aprovado para:</p>
+                <input ng-model="query.approvedFor" class="form-control" type="text" placeholder="Finalidade para qual o equipamento foi aprovado"/>
+            </div>
+            <div class="col-sm-4 filters">
+                <p>Validade do CA:</p>
+                <span>Válido:
+                </span><input type="checkbox" ng-model="query.status.valid"/>
+                <span>Vencido:</span>
+                <input type="checkbox" ng-model="query.status.invalid"/>
+            </div>
+            <div class="col-sm-4 filters">
+                <p>Equipamento:</p>
+                <input ng-model="query.equipment" class="form-control" type="text" placeholder="Nome do equipamento. Ex: Luva"/>
+            </div>
+            <div class="col-sm-2 col-sm-offset-1 filters">
+                <button class="btn btn-primary btn-lg center-block" type="submit" ng-disabled="fetching">Buscar CA &raquo;</button>
+
+            </div>
+            <div class="col-sm-4 text-center" ng-if="cas.length>=0 || error">
+                <span class="b text-danger" ng-hide="cas.length>0">{{error}}</span>
+                <span class="b text-info" ng-show="count!=undefined">{{count}}
+                    CAs encontrados. Exibindo {{cas.length}}</span>
+            </div>
+        </form>
+    </div>
+    <div class="table-responsive" style="padding-bottom: 20px;">
+        <table class="table table-striped">
+            <thead style="font-weight: bold;">
+                <th>
+                    <a href="" ng-click="caCtrl.orderBy('number')">Número</a>
+                </th>
+                <th>
+                    <a href="" ng-click="caCtrl.orderBy('date')">Validade</a>
+                </th>
+                <th>
+                    <a href="" ng-click="caCtrl.orderBy('status')">Situação</a>
+                </th>
+                <th>
+                    <a href="" ng-click="caCtrl.orderBy('company')">Empresa</a>
+                </th>
+                <th>
+                    <a href="" ng-click="caCtrl.orderBy('equipment')">Equipamento</a>
+                </th>
+                <th>
+                    <a href="" ng-click="caCtrl.orderBy('description')">Descrição</a>
+                </th>
+            </thead>
+            <tr ng-repeat="ca in cas | orderBy:orderCriteria:orderDirection" ng-hide="fetching">
+
+                <td>
+                    <i class="fa fa-exclamation-triangle" aria-hidden="true" ng-show="caCtrl.diffCheck(ca)"></i>
+                    {{::ca.number}}</td>
+                <td>{{::ca.date}}</td>
+                <td class="text-capitalize">{{::ca.status | lowercase}}</td>
+                <td class="text-capitalize" title={{ca.company}}>{{::ca.company | lowercase | limitTo:15}}{{ca.company.length > 15 ? '...' : ''}}</td>
+                <td class="text-capitalize" title={{ca.equipment}}>{{::ca.equipment | lowercase | limitTo:15}}{{ca.equipment.length > 15 ? '...' : ''}}</td>
+                <td title={{ca.description}}>{{::ca.description | limitTo:30}}{{::ca.description.length > 30 ? '...' : ''}}</td>
+                <td>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogTestDialog{{$index}}">Detalhes</button>
+                </td>
+                <td>
+                    <a class="btn btn-primary" type="button" ng-href="{{::caCtrl.getPdf(ca.fileName)}}" target="_self" download>Gerar PDF &raquo;</a>
+                    <!--Mca begins-->
+                    <div class="modal" id="dialogTestDialog{{$index}}" tabindex="-1" role="dialog" aria-labelledby="executionOptionLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content table-responsive">
+                                <div class="modal-header">
+                                    <p class="text-center bold" style="white-space: normal;">Certificado de Aprovação de Equipamento de Proteção Individual</p>
+                                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                                    <span class="text-left bold">
+                                        Nº do CA:</span>
+                                    {{ca.number}}
+                                    <span class="text-right text-capitalize bold" style="padding-left: 50px;">
+                                        <b>Situação:</b>
+                                        <span ng-class="ca.status=='VENCIDO'?'text-danger':'text-success'">{{ca.status | lowercase}}
+                                        </span>
+                                    </span>
+                                </div>
+                                <div class="modal-body">
+                                    <table style="white-space: normal;" class="table-striped">
+                                        <tr>
+                                            <td colspan="2">
+                                                <p>
+                                                    <b>Validade:</b>
+                                                    {{::ca.date}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <p>
+                                                    <b>Nº do Processo:</b>
+                                                    {{::ca.processNumber}}</p>
+                                            </td>
+                                        </tr>
+                                        <td style="width: 42%;">
+                                            <b>CNPJ:</b>
+                                            {{::ca.cnpj}}
+                                        </td>
+                                        <td>
+                                            <span class="text-capitalize">
+                                                <b>Razão Social:</b>
+                                                {{::ca.company | lowercase}}</span>
+                                        </td>
+                                        <tr>
+                                            <td colspan="2 ">
+                                                <p>
+                                                    <b>Natureza:</b>
+                                                    {{::ca.origin}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2 ">
+                                                <p class="text-capitalize ">
+                                                    <b>Equipamento:</b>
+                                                    {{::ca.equipment | lowercase}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2 ">
+                                                <p>
+                                                    <b>Descrição:</b>
+                                                    {{::ca.description}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2 ">
+                                                <p class="bold ">
+                                                    <i class="fa fa-arrow-circle-right " aria-hidden="true "></i>
+                                                    Dados Complementares</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2 ">
+                                                <p>
+                                                    <b>Marcação do CA:</b>
+                                                    {{::ca.caLocation}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="ca.references.length>1">
+                                            <td colspan="2">
+                                                <p>
+                                                    <b>Referências:</b>
+                                                    {{::ca.references}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="ca.colors.length>1">
+                                            <td colspan="2">
+                                                <p>
+                                                    <b>Cores:</b>
+                                                    {{::ca.colors}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <p class="bold">
+                                                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                                                    Laudo</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <p class="text-capitalize">
+                                                    <b>Aprovado Para:</b>
+                                                    {{::ca.approvedFor | lowercase}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="ca.observation.length>1">
+                                            <td colspan="2">
+                                                <p class="text-capitalize">
+                                                    <b>Observação:</b>
+                                                    {{::ca.observation}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr ng-show="ca.restrictions.length>1">
+                                            <td colspan="2">
+                                                <p>
+                                                    <b>Restrição:</b>
+                                                    {{::ca.restrictions}}</p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <table class="text-center">
+                                                    <thead>
+                                                        <th class="text-center">Nº do Laudo</th>
+                                                        <th class="text-center">Laboratório</th>
+                                                        <th class="text-center">Razão Social</th>
+                                                    </thead>
+                                                    <tr ng-repeat="report in ca.reports">
+                                                        <td style="max-width: 21%">{{::report.reportNumber}}</td>
+                                                        <td style="width: 21%">{{::report.laboratoryCNPJ}}</td>
+                                                        <td class="text-capitalize text-left">{{::report.laboratoryName | lowercase}}</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2">
+                                                <p>
+                                                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                                                    <b>
+                                                        Normas:</b>
+                                                    {{::ca.technicalRules.join(", ")}}</p>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <p style="padding-right: 10px;" class="text-right">
+                                        <a class="btn btn-primary btn-lg" type="button" ng-href="{{::caCtrl.getPdf(ca.fileName)}}" target="_self" download>Gerar PDF &raquo;</a>
+                                        <button class="btn btn-primary btn-lg" type="button" data-dismiss="modal">Fechar</button>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Modal ends-->
+                </td>
+            </tr>
+        </table>
+        <div ng-show="fetching" class="text-center">
+            <i class="fa fa-spinner fa-spin fa-3x"></i>
+        </div>
+    </div>
+</div>
