@@ -18,8 +18,8 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
 
     this.getCount = function() {
         $http({
-          url: "http://localhost:4567/ca/count",
-            // url: "http://perito2000.linkpc.net:4567/ca/count",
+          url: "http://perito2000.linkpc.net:4567/ca/count",
+          // url: "http://localhost:4567/ca/count",
             method: "GET"
         }).success(function(data) {
             $scope.CAcount = data;
