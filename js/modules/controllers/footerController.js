@@ -1,9 +1,11 @@
 app.controller("footerController", ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
+    // var baseUrl = "http://perito2000.linkpc.net:4567/";
+    var baseUrl = "http://localhost:4567/";
+
     this.getParams = function() {
         $http({
-            url: "http://perito2000.linkpc.net:4567/params",
-            // url: "http://localhost:4567/params",
+            url: baseUrl + "params",
             method: "GET"
         }).success(function(data) {
             $scope.fileUrl = data.fileUrl;
@@ -18,8 +20,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
 
     this.getCount = function() {
         $http({
-          url: "http://perito2000.linkpc.net:4567/ca/count",
-          // url: "http://localhost:4567/ca/count",
+            url: baseUrl + "ca/count",
             method: "GET"
         }).success(function(data) {
             $scope.CAcount = data;
@@ -37,8 +38,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
     this.updateFileUrl = function() {
         $scope.fileUrlUpdating = true;
         $http({
-            url: "http://perito2000.linkpc.net:4567/fileUrl",
-            // url: "http://localhost:4567/fileUrl",
+            url: baseUrl + "fileUrl",
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -63,8 +63,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
     this.updateDatabase = function() {
         $scope.databaseUpdating = true;
         $http({
-            url: "http://perito2000.linkpc.net:4567/updateDatabase",
-            // url: "http://localhost:4567/updateDatabase",
+            url: baseUrl + "updateDatabase",
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
@@ -85,13 +84,12 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
     };
 
     this.uploadCA = function() {
-      $scope.uploadingCA=true;
+        $scope.uploadingCA = true;
         $timeout(function() {
             $scope.fileUrlUpdatedSucess = false;
 
             var file = $scope.newCA;
-            // var uploadUrl = "http://localhost:4567/ca";
-            var uploadUrl = "http://perito2000.linkpc.net:4567/ca";
+            var uploadUrl = baseUrl + "ca";
             var fd = new FormData();
             fd.append('newCA', file);
             $http.post(uploadUrl, fd, {
@@ -102,7 +100,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                 })
                 .success(function(data) {
                     $scope.uploadMessage = data;
-                    $scope.uploadingCA=false;
+                    $scope.uploadingCA = false;
                     $scope.uploadSuccess = true;
                     $timeout(function() {
                         $scope.uploadSuccess = false;
@@ -110,14 +108,14 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                 })
                 .error(function(data) {
                     $scope.uploadMessage = data;
-                    $scope.uploadingCA=false;
+                    $scope.uploadingCA = false;
                     $scope.uploadSuccess = true;
                     $timeout(function() {
                         $scope.uploadSuccess = false;
                     }, 8000);
                 });
-                file=null;
-                fd=null;
+            file = null;
+            fd = null;
 
         }, 3000);
     };

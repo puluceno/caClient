@@ -1,4 +1,4 @@
-    var app = angular.module("caApp", []).config(function($sceDelegateProvider) {
+    var app = angular.module("caApp", ['ngTagsInput','ui.bootstrap']).config(function($sceDelegateProvider) {
         $sceDelegateProvider.resourceUrlWhitelist([
             // Allow same origin resource loads.
             'self',

@@ -1,5 +1,10 @@
 app.controller("caController", ['$scope', '$http', function($scope, $http) {
 
+    // var baseUrl = "http://perito2000.linkpc.net:4567/";
+    // var downloadUrl = "http://perito2000.linkpc.net:90/CAs/";
+    var baseUrl = "http://localhost:4567/";
+    var downloadUrl = "http://localhost:8000/";
+
     this.initialize = function() {
         $scope.query = {};
         $scope.query.status = {};
@@ -27,13 +32,12 @@ app.controller("caController", ['$scope', '$http', function($scope, $http) {
         }
 
         $http({
-            url: "http://perito2000.linkpc.net:4567/ca",
-            // url: "http://localhost:4567/ca",
+            url: baseUrl + "ca",
             method: "GET",
             params: $scope.query
         }).success(function(data) {
             $scope.count = data[data.length - 1].count;
-            data.splice(-1,1);
+            data.splice(-1, 1);
             $scope.cas = data;
             $scope.error = "";
             $scope.fetching = false;
@@ -47,8 +51,7 @@ app.controller("caController", ['$scope', '$http', function($scope, $http) {
     };
 
     this.getPdf = function(fileName) {
-        // return "http://localhost:8000/" + fileName;
-        return "http://perito2000.linkpc.net:90/CAs/" + fileName;
+        return downloadUrl + fileName;
     };
 
     this.orderBy = function(field) {

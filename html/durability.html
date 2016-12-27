@@ -2,5 +2,71 @@
     <div class="starter-template">
         <h1>Gerência de Durabilidade</h1>
     </div>
-    <div class="container"></div>
+    <div class="container">
+        <form name="searchForm" ng-submit="durabilityCtrl.createNew()" novalidate>
+            <div class="col-sm-4 filters">
+                <p>Equipamento</p>
+                <input type="text" ng-model="newDurability.equipment" uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12" class="form-control" placeholder="Nome do Equipamento. Ex: Luva">
+            </div>
+            <div class="col-sm-3 filters">
+                <p>Material</p>
+                <input type="text" ng-model="newDurability.material" uib-typeahead="material.name for material in materials | filter:$viewValue | limitTo:12" class="form-control" placeholder="Material utilizado no equipamento.">
+            </div>
+            <div class="col-sm-2 filters">
+                <p>Durabilidade</p>
+                <input ng-model="newDurability.days" class="form-control" type="number" placeholder="Tempo em dias"/>
+            </div>
+            <div class="col-sm-2 filters">
+                <p>Anexo</p>
+                <div class="fileUpload btn btn-primary" style="margin:0px;" ng-hide="uploadingBase">
+                    <i class="fa fa-upload" aria-hidden="true"></i>
+                    <span>Anexar arquivo</span>
+                    <input class="upload" type="file" file-model="base" accept='.pdf' onchange="angular.element(this).scope().durabilityCtrl.uploadBase()"/>
+                </div>
+            </div>
+            <div class="col-sm-1 filters">
+                <br/>
+                <button class="btn btn-primary center-block" style="margin-top:10px;" type="submit" ng-disabled="fetching">Inserir &raquo;</button>
+            </div>
+        </form>
+    </div>
+    <hr/>
+    <div class="table-responsive" style="padding-bottom: 20px;">
+        <table class="table table-striped">
+            <thead style="font-weight: bold;">
+                <th>
+                    <a href="" ng-click="durabilityCtrl.orderBy('date')">Data de inserção</a>
+                </th>
+                <th>
+                    <a href="" ng-click="durabilityCtrl.orderBy('equipment')">Equipamento</a>
+                </th>
+                <th>
+                    <a href="" ng-click="durabilityCtrl.orderBy('material')">Material</a>
+                </th>
+                <th>
+                    <a href="" ng-click="durabilityCtrl.orderBy('days')">Durabilidade</a>
+                </th>
+                <th>
+                    <a href="" ng-click="durabilityCtrl.orderBy('fileName')">Arquivo</a>
+                </th>
+            </thead>
+            <tr ng-repeat="durability in durabilities | orderBy:orderCriteria:orderDirection" ng-hide="fetching">
+                <td>{{::durability.date}}</td>
+                <td class="text-capitalize" title={{::durability.equipment}}>{{::durability.equipment | limitTo:35 | lowercase}}{{::durability.equipment.length > 35 ? '...' : ''}}</td>
+                <td class="text-capitalize">{{::durability.material | limitTo:60}}{{::durability.material.length>60?'...':''}}</td>
+                <td>{{::durability.days}}
+                    dias</td>
+                <td title={{durability.fileName}}>{{::durability.fileName | limitTo:30}}{{::durability.fileName.length > 30 ? '...' : ''}}</td>
+                <td>
+                    <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                </td>
+                <td>
+                    <i class="fa fa-trash-o fa-2x" aria-hidden="true"></i>
+                </td>
+            </tr>
+        </table>
+        <div ng-show="fetching" class="text-center">
+            <i class="fa fa-spinner fa-spin fa-3x"></i>
+        </div>
+    </div>
 </div>

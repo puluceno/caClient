@@ -51,9 +51,6 @@
                     <a href="" ng-click="caCtrl.orderBy('status')">Situação</a>
                 </th>
                 <th>
-                    <a href="" ng-click="caCtrl.orderBy('company')">Empresa</a>
-                </th>
-                <th>
                     <a href="" ng-click="caCtrl.orderBy('equipment')">Equipamento</a>
                 </th>
                 <th>
@@ -65,11 +62,10 @@
                 <td>
                     <i class="fa fa-exclamation-triangle" aria-hidden="true" ng-show="caCtrl.diffCheck(ca)"></i>
                     {{::ca.number}}</td>
-                <td>{{::ca.date}}</td>
+                <td>{{::ca.date | limitTo:12}}</td>
                 <td class="text-capitalize">{{::ca.status | lowercase}}</td>
-                <td class="text-capitalize" title={{ca.company}}>{{::ca.company | lowercase | limitTo:15}}{{ca.company.length > 15 ? '...' : ''}}</td>
-                <td class="text-capitalize" title={{ca.equipment}}>{{::ca.equipment | lowercase | limitTo:15}}{{ca.equipment.length > 15 ? '...' : ''}}</td>
-                <td title={{ca.description}}>{{::ca.description | limitTo:30}}{{::ca.description.length > 30 ? '...' : ''}}</td>
+                <td class="text-capitalize" title={{ca.equipment}}>{{::ca.equipment | lowercase | limitTo:30}}{{ca.equipment.length > 30 ? '...' : ''}}</td>
+                <td title={{ca.description}}>{{::ca.description | limitTo:35}}{{::ca.description.length > 30 ? '...' : ''}}</td>
                 <td>
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogTestDialog{{$index}}">Detalhes</button>
                 </td>

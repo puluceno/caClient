@@ -1,5 +1,5 @@
 app.controller("tabController", function() {
-    this.tab = 1;
+    this.tab = 3;
 
     this.isSet = function(checkTab) {
       return this.tab === checkTab;
