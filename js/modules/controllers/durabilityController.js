@@ -3,7 +3,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
     // var downloadUrl = "http://perito2000.linkpc.net:90/files/";
     var baseUrl = "http://localhost:4567/";
     var downloadUrl = "http://localhost:8000/";
-    $scope.cont = {};
+    var self = this;
 
     this.getDurabilities = function() {
         $http({
@@ -59,6 +59,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
 
     this.init();
 
+
     this.createNew = function(file) {
         $scope.fetching = true;
         var file = $scope.newDurability.file
@@ -78,6 +79,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
             $scope.durabilities = data;
             $scope.success = true;
             $scope.successMsg = "Durabilidade adicionada!"
+            self.getMaterials();
             $timeout(function() {
                 $scope.success = false;
             }, 10000);
@@ -91,7 +93,6 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
         });
         $scope.createDurabilityForm.$setPristine();
         $scope.newDurability = {};
-        this.getMaterials();
     };
 
     this.update = function(durability) {
@@ -109,10 +110,13 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
                 fd
             }
         }).then(function successCallback(data) {
-                $scope.durabilities = data;
+                console.log(data);
+                $scope.durabilities.length = 0;
+                Array.prototype.push.apply($scope.durabilities, data.data);
                 $scope.fetching = false;
                 $scope.success = true;
                 $scope.successMsg = "Durabilidade atualizada!"
+                self.getMaterials();
                 $timeout(function() {
                     $scope.success = false;
                 }, 10000);
