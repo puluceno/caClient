@@ -3,45 +3,49 @@
         <h1>Gerência de Durabilidade</h1>
     </div>
     <div class="container">
-        <form name="searchForm" ng-submit="durabilityCtrl.createNew()" novalidate>
+        <form name="createDurabilityForm" ng-submit="durabilityCtrl.createNew()" novalidate>
             <div class="col-sm-4 filters">
                 <p>Equipamento</p>
-                <input type="text" ng-model="newDurability.equipment" uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12" class="form-control" placeholder="Nome do Equipamento. Ex: Luva">
+                <input type="text" name="equipment" ng-model="newDurability.equipment" ng-required="true" uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12" class="form-control" placeholder="Nome do Equipamento. Ex: Luva">
             </div>
             <div class="col-sm-3 filters">
                 <p>Material</p>
-                <input type="text" ng-model="newDurability.material" uib-typeahead="material.name for material in materials | filter:$viewValue | limitTo:12" class="form-control" placeholder="Material utilizado no equipamento.">
+                <tags-input class="bootstrap" name="material" ng-model="newDurability.material" ng-required="true" placeholder="Material utilizado no equipamento." replace-spaces-with-dashes="false" minLength="1">
+                    <auto-complete source="loadMaterials($query)" min-length="1" max-results-to-show="10"></auto-complete>
+                </tags-input>
             </div>
             <div class="col-sm-2 filters">
                 <p>Durabilidade</p>
-                <input ng-model="newDurability.days" class="form-control" type="number" placeholder="Tempo em dias"/>
+                <input type="number" name="days" ng-model="newDurability.days" ng-required="true" class="form-control" placeholder="Tempo em dias"/>
             </div>
             <div class="col-sm-2 filters">
                 <p>Anexo</p>
                 <div class="fileUpload btn btn-primary" style="margin:0px;" ng-hide="uploadingBase">
                     <i class="fa fa-upload" aria-hidden="true"></i>
                     <span>Anexar arquivo</span>
-                    <input class="upload" type="file" file-model="base" accept='.pdf' onchange="angular.element(this).scope().durabilityCtrl.uploadBase()"/>
+                    <input class="upload" type="file" ngf-select ng-model="newDurability.file" name="file" accept=".pdf" ngf-max-size="5MB" ngf-model-invalid="errorFile">
                 </div>
             </div>
             <div class="col-sm-1 filters">
                 <br/>
-                <button class="btn btn-primary center-block" style="margin-top:10px;" type="submit" ng-disabled="fetching">Inserir &raquo;</button>
+                <button class="btn btn-primary center-block" style="margin-top:10px;" type="submit" ng-disabled="fetching || createDurabilityForm.$invalid">Inserir &raquo;</button>
             </div>
         </form>
     </div>
+    <span ng-show="success" class="text-success">{{successMsg}}</span>
+    <span ng-show="error" class="text-danger">{{errorMsg}}</span>
     <hr/>
     <div class="table-responsive" style="padding-bottom: 20px;">
         <table class="table table-striped">
             <thead style="font-weight: bold;">
                 <th>
-                    <a href="" ng-click="durabilityCtrl.orderBy('date')">Data de inserção</a>
+                    <a href="" ng-click="durabilityCtrl.orderBy('created')">Atualizado</a>
                 </th>
                 <th>
                     <a href="" ng-click="durabilityCtrl.orderBy('equipment')">Equipamento</a>
                 </th>
                 <th>
-                    <a href="" ng-click="durabilityCtrl.orderBy('material')">Material</a>
+                    <a href="">Material</a>
                 </th>
                 <th>
                     <a href="" ng-click="durabilityCtrl.orderBy('days')">Durabilidade</a>
@@ -51,22 +55,64 @@
                 </th>
             </thead>
             <tr ng-repeat="durability in durabilities | orderBy:orderCriteria:orderDirection" ng-hide="fetching">
-                <td>{{::durability.date}}</td>
-                <td class="text-capitalize" title={{::durability.equipment}}>{{::durability.equipment | limitTo:35 | lowercase}}{{::durability.equipment.length > 35 ? '...' : ''}}</td>
-                <td class="text-capitalize">{{::durability.material | limitTo:60}}{{::durability.material.length>60?'...':''}}</td>
-                <td>{{::durability.days}}
-                    dias</td>
-                <td title={{durability.fileName}}>{{::durability.fileName | limitTo:30}}{{::durability.fileName.length > 30 ? '...' : ''}}</td>
                 <td>
-                    <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                    {{durability.created.$date | date:'dd/MM/yyyy'}}
                 </td>
-                <td>
-                    <i class="fa fa-trash-o fa-2x" aria-hidden="true"></i>
+                <td ng-hide="editing" title={{durability.equipment}}>
+                    {{durability.equipment | limitTo:35}}{{durability.equipment.length > 35 ? '...' : ''}}
                 </td>
-            </tr>
-        </table>
-        <div ng-show="fetching" class="text-center">
-            <i class="fa fa-spinner fa-spin fa-3x"></i>
+                <td ng-hide="editing">
+                    {{durabilityCtrl.printMaterials(durability.material)}}
+                </td>
+                <td ng-hide="editing">{{durability.days}}
+                    {{durability.days>1?'dias':'dia'}}
+                </td>
+                <td ng-hide="editing" title={{durability.fileName}}>
+                    <a ng-href="{{durabilityCtrl.getFile(durability.fileName)}}" target="_self" download>
+                        {{durability.fileName | limitTo:30}}{{durability.fileName.length > 30 ? '...' : ''}}
+                    </a>
+                </td>
+                <td ng-hide="editing">
+                    <button class="btn btn-primary center-block" title="Editar" ng-click="editing=true" ng-hide="editing">
+                        <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td ng-hide="editing" ng-form="deleteDurabilityForm">
+                    <button class="btn btn-primary center-block" title="Remover" ng-click="durabilityCtrl.delete(durability._id.$oid)">
+                        <i class="fa fa-trash-o fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td ng-show="editing">
+                    <input type="text" ng-model="durability.equipment" uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12" class="form-control" placeholder="Nome do Equipamento. Ex: Luva">
+                </td>
+                <td ng-show="editing">
+                    <tags-input class="bootstrap" name="material" ng-model="durability.material" placeholder="Material utilizado no equipamento." replace-spaces-with-dashes="false" minLength="1">
+                        <auto-complete source="loadMaterials($query)" min-length="1" max-results-to-show="10"></auto-complete>
+                    </tags-input>
+                </td>
+                <td ng-show="editing">
+                    <input ng-model="durability.days" class="form-control" type="number" placeholder="Tempo em dias"/>
+                </td>
+                <td ng-show="editing">
+                    <div class="fileUpload btn btn-primary" style="margin:0px;" ng-hide="uploadingBase">
+                        <i class="fa fa-upload" aria-hidden="true"></i>
+                        <span>Alterar arquivo</span>
+                        <input class="upload" type="file" ngf-select ng-model="durability.file" name="file" accept=".pdf" ngf-max-size="5MB" ngf-model-invalid="errorFile">
+                    </div>
+                </td>
+                <td ng-show="editing">
+                    <button class="btn btn-primary center-block" title="Salvar" type="submit" ng-click="durabilityCtrl.update(durability);editing=false" ng-show="editing">
+                        <i class="fa fa-floppy-o fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td ng-show="editing">
+                    <button class="btn btn-primary center-block" title="Cancelar Edição" ng-click="editing=false" ng-show="editing">
+                        <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </table>
+            <div ng-show="fetching" class="text-center">
+                <i class="fa fa-spinner fa-spin fa-3x"></i>
+            </div>
         </div>
     </div>
-</div>
