@@ -1,9 +1,9 @@
 app.controller("caController", ['$scope', '$http', function($scope, $http) {
 
-    // var baseUrl = "http://perito2000.linkpc.net:4567/";
-    // var downloadUrl = "http://perito2000.linkpc.net:90/CAs/";
-    var baseUrl = "http://localhost:4567/";
-    var downloadUrl = "http://localhost:8000/";
+    var baseUrl = "http://perito2000.linkpc.net:4567/";
+    var downloadUrl = "http://perito2000.linkpc.net:90/CAs/";
+    // var baseUrl = "http://localhost:4567/";
+    // var downloadUrl = "http://localhost:8000/";
 
     this.initialize = function() {
         $scope.query = {};

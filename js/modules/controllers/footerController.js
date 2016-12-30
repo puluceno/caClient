@@ -1,7 +1,7 @@
 app.controller("footerController", ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
-    // var baseUrl = "http://perito2000.linkpc.net:4567/";
-    var baseUrl = "http://localhost:4567/";
+    var baseUrl = "http://perito2000.linkpc.net:4567/";
+    // var baseUrl = "http://localhost:4567/";
 
     this.getParams = function() {
         $http({
