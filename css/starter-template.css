@@ -51,11 +51,11 @@ td {
 }
 
 .fileUrlInput {
-    width: 60% !important;
+    min-width: 60% !important;
 }
 
 .footer {
-    position: absolute;
+    position: relative;
     bottom: 25px;
 }
 
