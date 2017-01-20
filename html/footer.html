@@ -1,4 +1,6 @@
 <footer class="footer" ng-controller="footerController as footerCtrl">
+    <span ng-show="formCASuccess" class="text-success">{{successMsgFooter}}</span>
+    <span ng-show="formCAError" class="text-danger">{{errorMsgFooter}}</span>
     <div class="container">
         <form name="formFileUrl" class="form-inline small text-center" ng-submit="footerCtrl.updateFileUrl()" novalidate>
             <span>Arquivo de atualização:
@@ -12,11 +14,17 @@
         <div class="text-center text-muted small">
             <div class="fileUpload btn btn-primary btn-sm" ng-hide="uploadingCA">
                 <i class="fa fa-upload" aria-hidden="true"></i>
-                <span>Adicionar um CA ao sistema</span>
+                <span>Adicionar um CA através de arquivo</span>
                 <input class="upload" type="file" file-model="newCA" accept='.pdf' onchange="angular.element(this).scope().footerCtrl.uploadCA()"/>
             </div>
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#dialogInsertCA" ng-hide="uploadingCA">
+                <i class="fa fa-upload" aria-hidden="true"></i>
+                Adicionar um CA manualmente
+            </button>
             <i class="fa fa-spinner fa-spin fa" ng-show="uploadingCA"></i>
             <span ng-show="uploadSuccess" class="b text-primary">{{uploadMessage}}</span>
+        </div>
+        <div class="text-center text-muted small">
             <span>Existem
                 {{CAcount}}
                 CA no sistema.
@@ -31,6 +39,171 @@
                 {{updateCount}}
                 CA adicionados ao sistema.
             </span>
+        </div>
+    </div>
+
+    <div class="modal" id="dialogInsertCA" tabindex="-1" role="dialog" aria-labelledby="executionOptionLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content table-responsive">
+                <form class="form-inline" name="createCAForm" ng-hide="creatingFormCA">
+                    <div class="modal-header">
+                        <p class="text-center bold" style="white-space: normal;">Certificado de Aprovação de Equipamento de Proteção Individual</p>
+
+                        <div class="form-group">
+                            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                            <label class="control-label">Nº do CA:</label>
+                            <input type="number" class="form-control" placeholder="Nº do CA" ng-maxlength="5" ng-minlength="2" min ng-model="formCA.number" ng-required="true" ng-class="{'required' : createCAForm.$invalid}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Situação:</label>
+                            <div class="btn-group">
+                                <span class="control-label">Válido</span><input type="radio" ng-model="formCA.status" value="VÁLIDO">
+                                <span class="control-label">Vencido</span><input type="radio" ng-model="formCA.status" value="VENCIDO">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label class="control-label">Validade:</label>
+                            <input type="text" class="form-control" placeholder="Data de validade do CA. Ex: 31/05/2015" ng-model="formCA.date" ng-required="true" ng-class="{'required' : createCAForm.$invalid}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Nº do Processo:</label>
+                            <input type="text" class="form-control" placeholder="Nº do Processo" ng-model="formCA.processNumber" ng-required="true" ng-class="{'required' : createCAForm.$invalid}">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">CNPJ:</label>
+                            <input type="text" class="form-control" placeholder="CNPJ" ng-model="formCA.cnpj">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Razão Social:</label>
+                            <input type="text" class="form-control" placeholder="Razão Social" ng-model="formCA.company">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Natureza:</label>
+                            <div class="btn-group">
+                                <span class="control-label">Nacional</span><input type="radio" ng-model="formCA.origin" value="Nacional">
+                                <span class="control-label">Importado</span><input type="radio" ng-model="formCA.origin" value="Importado">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Equipamento:</label>
+                            <input
+                                type="text"
+                                name="equipment"
+                                ng-model="formCA.equipment"
+                                uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12"
+                                class="form-control"
+                                placeholder="Nome do Equipamento. Ex: Luva"
+                                ng-required="true"
+                                ng-class="{'required' : createCAForm.$invalid}">
+                        </div>
+
+                        <div class="form-group" style="width:60%;">
+                            <label class="control-label">Descrição:</label>
+                            <textarea class="form-control" placeholder="Descrição" style="width:75%;" ng-model="formCA.description" ng-required="true" ng-class="{'required' : createCAForm.$invalid}"></textarea>
+                        </div>
+
+                        <p class="bold ">
+                            <i class="fa fa-arrow-circle-right " aria-hidden="true "></i>
+                            Dados Complementares
+                        </p>
+
+                        <div class="form-group">
+                            <label class="control-label">Marcação do CA:</label>
+                            <input type="text" class="form-control" placeholder="Marcação do CA" ng-model="formCA.caLocation">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Referências:</label>
+                            <input type="text" class="form-control" placeholder="Referências" ng-model="formCA.references">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Cores:</label>
+                            <input type="text" class="form-control" placeholder="Cores" ng-model="formCA.colors">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Tamanhos:</label>
+                            <input type="text" class="form-control" placeholder="Tamanhos" ng-model="formCA.size">
+                        </div>
+
+                        <p class="bold">
+                            <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                            Laudo
+                        </p>
+
+                        <div class="form-group" style="width:100%;">
+                            <label class="control-label">Aprovado Para:</label>
+                            <textarea class="form-control" placeholder="Aprovado para" style="width:75%;" ng-model="formCA.approvedFor" ng-required="true" ng-class="{'required' : createCAForm.$invalid}"></textarea>
+                        </div>
+
+                        <div class="form-group" style="width:100%;">
+                            <label class="control-label">Observação:</label>
+                            <textarea class="form-control" placeholder="Observação" style="width:78%;" ng-model="formCA.observation"></textarea>
+                        </div>
+
+                        <div class="form-group" style="width:100%;">
+                            <label class="control-label">Restrição:</label>
+                            <input type="text" class="form-control" placeholder="Restrições" style="width:79%;" ng-model="formCA.restrictions">
+                        </div>
+
+                        <table class="text-center form-group" style="width:100%;">
+                            <thead>
+                                <th>
+                                    <i class="fa fa-plus-circle" aria-hidden="true" ng-click="footerCtrl.addReportField()" style="cursor: pointer;"></i>
+                                    <i class="fa fa-minus-circle" aria-hidden="true" ng-click="footerCtrl.removeReportField($index)" style="cursor: pointer;"></i>
+                                </th>
+                                <th class="text-center">Nº do Laudo</th>
+                                <th class="text-center">Laboratório</th>
+                                <th class="text-center">Razão Social</th>
+                            </thead>
+                            <tr ng-repeat="report in reports">
+                                <td style="width:32%;" colspan="2">
+                                    <input type="text" class="form-control width90" placeholder="Nº do Laudo" ng-model="reports[$index].reportNumber">
+                                </td>
+                                <td style="width:32%;">
+                                    <input type="text" class="form-control" placeholder="CNPJ Laboratório" ng-model="reports[$index].laboratoryCNPJ">
+                                </td>
+                                <td style="width:32%;">
+                                    <input type="text" class="form-control" placeholder="Nome do Laboratório" ng-model="reports[$index].laboratoryName">
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div class="form-group" style="width:100%;">
+                            <label class="control-label">Normas:</label>
+                            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="footerCtrl.addRuleField()" style="cursor: pointer;"></i>
+                            <i class="fa fa-minus-circle" aria-hidden="true" ng-click="footerCtrl.removeRuleField($index)" style="cursor: pointer;"></i>
+                            <input type="text" class="form-control" placeholder="Norma" style="width:79%;" ng-repeat="technicalRule in technicalRules" ng-model="technicalRules[$index].rule">
+                        </div>
+
+                        <div class="fileUpload btn btn-primary" style="margin:0px;" ng-hide="uploadingFormCA">
+                            <i class="fa fa-upload" aria-hidden="true"></i>
+                            <span>Anexar arquivo</span>
+                            <input class="upload" type="file" ngf-select ng-model="formCA.file" name="file" accept=".pdf" ngf-max-size="5MB" ngf-model-invalid="errorFile">
+                        </div>
+                        <span>{{formCA.file.name}}</span>
+
+                    </div>
+                    <div class="modal-footer">
+                        <p style="padding-right: 10px;" class="text-right">
+                            <button class="btn btn-primary btn-lg" type="button" ng-click="footerCtrl.clearForm()" data-dismiss="modal">Cancelar</a>
+                            <button class="btn btn-primary btn-lg" type="button" ng-click="footerCtrl.submitFormCA()" ng-disabled="createCAForm.$invalid">Salvar &raquo;</button>
+                        </p>
+                    </div>
+                </div>
+            </form>
+            <div ng-show="creatingFormCA" class="text-center">
+                <i class="fa fa-spinner fa-spin fa-4x"></i>
+            </div>
         </div>
     </div>
 </footer>

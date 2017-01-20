@@ -26,6 +26,13 @@ input[type=checkbox] {
     padding: 10px;
 }
 
+input[type=radio] {
+    transform: scale(1.5);
+    -ms-transform: scale(1.5);
+    -webkit-transform: scale(1.5);
+    margin: 10px;
+}
+
 td {
     padding: 5px 5px 0px 5px;
 }
@@ -76,8 +83,32 @@ td {
     filter: alpha(opacity=0);
 }
 
+.form-group{
+  margin-bottom:15px !important;
+}
+
+.width90{
+  width:90%;
+}
+
+.fa-plus-circle{
+  transform: scale(1.3);
+  -ms-transform: scale(1.3);
+  -webkit-transform: scale(1.3);
+}
+
+.fa-minus-circle{
+  transform: scale(1.3);
+  -ms-transform: scale(1.3);
+  -webkit-transform: scale(1.3);
+}
+
 @media (min-width: 768px) {
     .modal-dialog {
         width: 900px;
         margin: 30px auto;
+}
+
+.required{
+  border-color: red;
 }

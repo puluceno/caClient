@@ -1,7 +1,8 @@
 app.controller("footerController", ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
-    var baseUrl = "http://perito2000.linkpc.net:4567/";
-    // var baseUrl = "http://localhost:4567/";
+    // var baseUrl = "http://perito2000.linkpc.net:4567/";
+    var baseUrl = "http://localhost:4567/";
+    var self = this;
 
     this.getParams = function() {
         $http({
@@ -32,8 +33,24 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
         });
     };
 
+    this.getEquipments = function() {
+        $http({
+            url: baseUrl + "equipment",
+            method: "GET"
+        }).success(function(data) {
+            $scope.equipments = data;
+        }).error(function() {
+            $scope.insertError = true;
+            $scope.errorMsg = "Aconteceu um erro!"
+            $timeout(function() {
+                $scope.error = false;
+            }, 15000);
+        });
+    };
+
     this.getCount();
     this.getParams();
+    this.getEquipments();
 
     this.updateFileUrl = function() {
         $scope.fileUrlUpdating = true;
@@ -104,7 +121,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                     $scope.uploadSuccess = true;
                     $timeout(function() {
                         $scope.uploadSuccess = false;
-                    }, 8000);
+                    }, 15000);
                 })
                 .error(function(data) {
                     $scope.uploadMessage = data;
@@ -112,12 +129,80 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                     $scope.uploadSuccess = true;
                     $timeout(function() {
                         $scope.uploadSuccess = false;
-                    }, 8000);
+                    }, 15000);
                 });
             file = null;
             fd = null;
 
         }, 3000);
     };
+
+    $scope.formCA = {};
+    $scope.reports = [{}];
+    $scope.technicalRules = [{}];
+
+    this.addReportField = function() {
+        $scope.reports.push({});
+    };
+
+    this.removeReportField = function(index) {
+        $scope.reports.splice(index, 1);
+    };
+
+    this.addRuleField = function() {
+        $scope.technicalRules.push({});
+    };
+
+    this.removeRuleField = function(index) {
+        $scope.technicalRules.splice(index, 1);
+    };
+
+    this.clearForm = function() {
+        $scope.formCA = {};
+        $scope.reports = [{}];
+        $scope.technicalRules = [{}];
+        $scope.createCAForm.$setPristine();
+    };
+
+    this.submitFormCA = function(file) {
+        $scope.creatingFormCA = true;
+        $scope.formCA.reports = [];
+        $scope.formCA.reports.push(...$scope.reports);
+        $scope.formCA.technicalRules = [];
+        $scope.formCA.technicalRules.push(...$scope.technicalRules);
+        $timeout(function() {
+            var file = $scope.formCA.file
+            var fd = new FormData();
+            fd.append("file", file);
+            fd.append("data", angular.toJson($scope.formCA));
+            $http.post(baseUrl + "caform", fd, {
+                headers: {
+                    'Content-Type': undefined
+                },
+                transformRequest: angular.identity,
+                params: {
+                    fd
+                }
+            }).success(function(data) {
+                $scope.creatingFormCA = false;
+                $scope.formCASuccess = true;
+                $scope.successMsgFooter = data;
+                self.getCount();
+                // self.clearForm();
+                $timeout(function() {
+                    $scope.formCASuccess = false;
+                }, 15000);
+            }).error(function(data) {
+                $scope.creatingFormCA = false;
+                $scope.formCAError = true;
+                $scope.errorMsgFooter = data == null ? "O servidor está indisponível" : data;
+                $timeout(function() {
+                    $scope.formCAError = false;
+                }, 15000);
+            });
+            angular.element(document.querySelector('#dialogInsertCA')).modal('hide');
+        }, 3000);
+    };
+
 
 }]);

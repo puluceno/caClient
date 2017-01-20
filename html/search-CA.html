@@ -93,14 +93,10 @@
                                             <td colspan="2">
                                                 <p>
                                                     <b>Validade:</b>
-                                                    {{::ca.date}}</p>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td colspan="2">
-                                                <p>
+                                                    <span>{{::ca.date}}</span>
                                                     <b>Nº do Processo:</b>
-                                                    {{::ca.processNumber}}</p>
+                                                    <span>{{::ca.processNumber}}</span>
+                                                  </p>
                                             </td>
                                         </tr>
                                         <td style="width: 42%;">
@@ -147,14 +143,14 @@
                                                     {{::ca.caLocation}}</p>
                                             </td>
                                         </tr>
-                                        <tr ng-show="ca.references.length>1">
+                                        <tr ng-show="ca.references.length>0">
                                             <td colspan="2">
                                                 <p>
                                                     <b>Referências:</b>
                                                     {{::ca.references}}</p>
                                             </td>
                                         </tr>
-                                        <tr ng-show="ca.colors.length>1">
+                                        <tr ng-show="ca.colors.length>0">
                                             <td colspan="2">
                                                 <p>
                                                     <b>Cores:</b>
@@ -175,14 +171,14 @@
                                                     {{::ca.approvedFor | lowercase}}</p>
                                             </td>
                                         </tr>
-                                        <tr ng-show="ca.observation.length>1">
+                                        <tr ng-show="ca.observation.length>0">
                                             <td colspan="2">
                                                 <p class="text-capitalize">
                                                     <b>Observação:</b>
                                                     {{::ca.observation}}</p>
                                             </td>
                                         </tr>
-                                        <tr ng-show="ca.restrictions.length>1">
+                                        <tr ng-show="ca.restrictions.length>0">
                                             <td colspan="2">
                                                 <p>
                                                     <b>Restrição:</b>

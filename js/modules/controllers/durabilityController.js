@@ -1,8 +1,8 @@
 app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout', function($scope, $http, Upload, $timeout) {
-    var baseUrl = "http://perito2000.linkpc.net:4567/";
-    var downloadUrl = "http://perito2000.linkpc.net:90/files/";
-    // var baseUrl = "http://localhost:4567/";
-    // var downloadUrl = "http://localhost:8000/";
+    // var baseUrl = "http://perito2000.linkpc.net:4567/";
+    // var downloadUrl = "http://perito2000.linkpc.net:90/files/";
+    var baseUrl = "http://localhost:4567/";
+    var downloadUrl = "http://localhost:8000/";
     var self = this;
 
     this.getDurabilities = function() {
@@ -16,7 +16,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
             $scope.errorMsg = "Aconteceu um erro!"
             $timeout(function() {
                 $scope.error = false;
-            }, 10000);
+            }, 12000);
         });
     };
 
@@ -31,7 +31,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
             $scope.errorMsg = "Aconteceu um erro!"
             $timeout(function() {
                 $scope.error = false;
-            }, 10000);
+            }, 12000);
         });
     };
 
@@ -46,7 +46,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
             $scope.errorMsg = "Aconteceu um erro!"
             $timeout(function() {
                 $scope.error = false;
-            }, 10000);
+            }, 12000);
         });
     };
 
@@ -82,14 +82,14 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
             self.getMaterials();
             $timeout(function() {
                 $scope.success = false;
-            }, 10000);
+            }, 12000);
         }).error(function(status) {
             $scope.insertError = true;
             $scope.errorMsg = "Aconteceu um erro!"
             $scope.fetching = false;
             $timeout(function() {
                 $scope.error = false;
-            }, 10000);
+            }, 12000);
         });
         $scope.createDurabilityForm.$setPristine();
         $scope.newDurability = {};
@@ -119,7 +119,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
                 self.getMaterials();
                 $timeout(function() {
                     $scope.success = false;
-                }, 10000);
+                }, 12000);
             },
             function errorCallback(status) {
                 $scope.error = true;
@@ -127,7 +127,7 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
                 $scope.fetching = false;
                 $timeout(function() {
                     $scope.error = false;
-                }, 10000);
+                }, 12000);
             });
     };
 
@@ -154,14 +154,14 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
             $scope.fetching = false;
             $timeout(function() {
                 $scope.success = false;
-            }, 10000);
+            }, 12000);
         }).error(function() {
             $scope.insertError = true;
             $scope.errorMsg = "Aconteceu um erro!"
             $scope.fetching = false;
             $timeout(function() {
                 $scope.error = false;
-            }, 10000);
+            }, 12000);
         });
     };
 

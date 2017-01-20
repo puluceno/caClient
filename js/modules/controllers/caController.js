@@ -1,9 +1,9 @@
 app.controller("caController", ['$scope', '$http', function($scope, $http) {
 
-    var baseUrl = "http://perito2000.linkpc.net:4567/";
-    var downloadUrl = "http://perito2000.linkpc.net:90/CAs/";
-    // var baseUrl = "http://localhost:4567/";
-    // var downloadUrl = "http://localhost:8000/";
+    // var baseUrl = "http://perito2000.linkpc.net:4567/";
+    // var downloadUrl = "http://perito2000.linkpc.net:90/CAs/";
+    var baseUrl = "http://localhost:4567/";
+    var downloadUrl = "http://localhost:8000/";
 
     this.initialize = function() {
         $scope.query = {};
@@ -62,7 +62,9 @@ app.controller("caController", ['$scope', '$http', function($scope, $http) {
     this.diffCheck = function(ca) {
         if ($scope.cas.length > 0) {
             for (var i = 0; i < $scope.cas.length; i++) {
-                if ((ca.approvedFor != $scope.cas[i].approvedFor) && (ca.number == $scope.cas[i].number)) {
+                if (((ca.approvedFor != $scope.cas[i].approvedFor) && (ca.number == $scope.cas[i].number)))
+                 //|| ((ca.number == $scope.cas[i].number) && (ca.date != $scope.cas[i].date)))
+                 {
                     return true;
                 }
             }
