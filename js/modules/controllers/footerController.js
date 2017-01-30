@@ -140,6 +140,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
     $scope.formCA = {};
     $scope.reports = [{}];
     $scope.technicalRules = [{}];
+    $scope.frequencies=["125","250","500","1000","2000","3150","4000","6300","8000","NRRsf"];
     $scope.formCA.attenuationTable = {"frequencies":[125,250,500,1000,2000,3150,4000,6300,8000,"NRRsf"],"dbAttenuations":new Array(10),"deviations":new Array(10)};
 
     this.addReportField = function() {
@@ -162,6 +163,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
         $scope.formCA = {};
         $scope.reports = [{}];
         $scope.technicalRules = [{}];
+        $scope.frequencies=["125","250","500","1000","2000","3150","4000","6300","8000","NRRsf"];
         $scope.formCA.attenuationTable = {"frequencies":[125,250,500,1000,2000,3150,4000,6300,8000,"NRRsf"],"dbAttenuations":new Array(10),"deviations":new Array(10)};
         $scope.createCAForm.$setPristine();
     };
