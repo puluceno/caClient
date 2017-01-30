@@ -1,8 +1,8 @@
 app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout', function($scope, $http, Upload, $timeout) {
-    // var baseUrl = "http://perito2000.linkpc.net:4567/";
-    // var downloadUrl = "http://perito2000.linkpc.net:90/files/";
-    var baseUrl = "http://localhost:4567/";
-    var downloadUrl = "http://localhost:8000/";
+    var baseUrl = "http://52.67.252.0:4567/";
+    var downloadUrl = "http://52.67.252.0/files/";
+    // var baseUrl = "http://localhost:4567/";
+    // var downloadUrl = "http://localhost:8000/";
     var self = this;
 
     this.getDurabilities = function() {

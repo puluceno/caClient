@@ -4,9 +4,10 @@
     </div>
     <div class="container">
         <form name="searchForm" ng-submit="caCtrl.submitForm()" novalidate>
-            <div class="col-sm-4 filters">
+            <div class="col-sm-4 filters form-inline">
                 <p>Número do CA:</p>
-                <input ng-model="query.number" maxlength="5" class="form-control" type="text" placeholder="Número exato ou parcial do CA"/>
+                <input type="checkbox" ng-model="query.exactSearch" title="Buscar apenas pelo número exato do CA"/>
+                <input ng-model="query.number" maxlength="5" class="form-control width90" type="text" placeholder="Número exato ou parcial do CA"/>
             </div>
             <div class="col-sm-4 filters">
                 <p>Nome da Empresa:</p>
@@ -34,7 +35,8 @@
             <div class="col-sm-4 text-center" ng-if="cas.length>=0 || error">
                 <span class="b text-danger" ng-hide="cas.length>0">{{error}}</span>
                 <span class="b text-info" ng-show="count!=undefined">{{count}}
-                    CAs encontrados. Exibindo {{cas.length}}</span>
+                    CAs encontrados. Exibindo
+                    {{cas.length}}</span>
             </div>
         </form>
     </div>
@@ -96,7 +98,7 @@
                                                     <span>{{::ca.date}}</span>
                                                     <b>Nº do Processo:</b>
                                                     <span>{{::ca.processNumber}}</span>
-                                                  </p>
+                                                </p>
                                             </td>
                                         </tr>
                                         <td style="width: 42%;">
@@ -209,6 +211,43 @@
                                                         Normas:</b>
                                                     {{::ca.technicalRules.join(", ")}}</p>
                                             </td>
+                                        </tr>
+                                        <tr ng-hide="ca.attenuationTable==null">
+                                            <td colspan="2">
+                                                <p class="bold">
+                                                    <i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+                                                    Tabela de atenuação</p>
+                                            </td>
+                                        </tr>
+                                        <tr ng-hide="ca.attenuationTable==null">
+                                          <td colspan="2">
+                                            <table class="text-center table-bordered">
+                                              <tr>
+                                                <td>
+                                                  Frequência (Hz):
+                                                </td>
+                                                <td ng-repeat="freq in ca.attenuationTable.frequencies track by $index">
+                                                  {{freq}}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>
+                                                  Atenuação db:
+                                                </td>
+                                                <td ng-repeat="db in ca.attenuationTable.dbAttenuations track by $index">
+                                                  {{db}}
+                                                </td>
+                                              </tr>
+                                              <tr>
+                                                <td>
+                                                  Desvio Padrão:
+                                                </td>
+                                                <td ng-repeat="dev in ca.attenuationTable.deviations track by $index">
+                                                  {{dev}}
+                                                </td>
+                                              </tr>
+                                            </table>
+                                          </td>
                                         </tr>
                                     </table>
                                 </div>

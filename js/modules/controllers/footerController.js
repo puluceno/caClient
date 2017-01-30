@@ -1,7 +1,7 @@
 app.controller("footerController", ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
-    // var baseUrl = "http://perito2000.linkpc.net:4567/";
-    var baseUrl = "http://localhost:4567/";
+    var baseUrl = "http://52.67.252.0:4567/";
+    // var baseUrl = "http://localhost:4567/";
     var self = this;
 
     this.getParams = function() {
@@ -140,6 +140,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
     $scope.formCA = {};
     $scope.reports = [{}];
     $scope.technicalRules = [{}];
+    $scope.formCA.attenuationTable = {"frequencies":[125,250,500,1000,2000,3150,4000,6300,8000,"NRRsf"],"dbAttenuations":new Array(10),"deviations":new Array(10)};
 
     this.addReportField = function() {
         $scope.reports.push({});
@@ -161,6 +162,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
         $scope.formCA = {};
         $scope.reports = [{}];
         $scope.technicalRules = [{}];
+        $scope.formCA.attenuationTable = {"frequencies":[125,250,500,1000,2000,3150,4000,6300,8000,"NRRsf"],"dbAttenuations":new Array(10),"deviations":new Array(10)};
         $scope.createCAForm.$setPristine();
     };
 
@@ -201,7 +203,42 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                 }, 15000);
             });
             angular.element(document.querySelector('#dialogInsertCA')).modal('hide');
-        }, 3000);
+        }, 1500);
+    };
+
+    this.uploadCAFormFile = function() {
+        $scope.creatingFormCA = true;
+        $timeout(function() {
+            var file = $scope.formCA.file
+            var fd = new FormData();
+            fd.append("file", file);
+            $http.post(baseUrl + "caformfile", fd, {
+                    headers: {
+                        'Content-Type': undefined
+                    },
+                    transformRequest: angular.identity,
+                    params: {
+                        fd
+                    }
+                }).success(function(data) {
+                    $scope.formCA = data;
+                    $scope.formCA.file = file;
+                    $scope.formCA.number = parseInt(data.number);
+                    $scope.creatingFormCA = false;
+                    $scope.formCASuccess = true;
+                    $timeout(function() {
+                        $scope.formCASuccess = false;
+                    }, 15000);
+                })
+                .error(function(data) {
+                    $scope.creatingFormCA = false;
+                    $scope.formCAError = true;
+                    $scope.errorMsgFooter = data == null ? "O servidor está indisponível" : data;
+                    $timeout(function() {
+                        $scope.formCAError = false;
+                    }, 15000);
+                });
+        }, 1500);
     };
 
 

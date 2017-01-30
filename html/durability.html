@@ -4,19 +4,28 @@
     </div>
     <div class="container">
         <form name="createDurabilityForm" ng-submit="durabilityCtrl.createNew()" novalidate>
-            <div class="col-sm-4 filters">
+            <div class="col-sm-3 filters">
                 <p>Equipamento</p>
                 <input type="text" name="equipment" ng-model="newDurability.equipment" ng-required="true" uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12" class="form-control" placeholder="Nome do Equipamento. Ex: Luva">
             </div>
             <div class="col-sm-3 filters">
                 <p>Material</p>
-                <tags-input class="bootstrap" name="material" ng-model="newDurability.material" ng-required="true" placeholder="Material utilizado no equipamento." replace-spaces-with-dashes="false" minLength="1">
+                <tags-input class="bootstrap" name="material" ng-model="newDurability.material" placeholder="Material utilizado no equipamento." replace-spaces-with-dashes="false" minLength="1">
                     <auto-complete source="loadMaterials($query)" min-length="1" max-results-to-show="10"></auto-complete>
                 </tags-input>
             </div>
             <div class="col-sm-2 filters">
                 <p>Durabilidade</p>
-                <input type="number" name="days" ng-model="newDurability.days" ng-required="true" class="form-control" placeholder="Tempo em dias"/>
+                <input type="number" name="days" ng-model="newDurability.days" ng-required="true" class="form-control" placeholder="Dias"/>
+            </div>
+            <div class="col-sm-2 filters">
+                <p>Tipo de exposição</p>
+                <div class="btn-group">
+                    <span class="control-label">Limitada</span><input type="radio" ng-model="newDurability.type" ng-dblclick="newDurability.type=null" value="Limitada"><br/>
+                    <span class="control-label">Comum</span><input type="radio" ng-model="newDurability.type" ng-dblclick="newDurability.type=null" value="Comum"><br/>
+                    <span class="control-label">Extendida</span><input type="radio" ng-model="newDurability.type" ng-dblclick="newDurability.type=null" value="Extendida">
+                    {{newDurability.type}}
+                </div>
             </div>
             <div class="col-sm-2 filters">
                 <p>Anexo</p>
@@ -51,6 +60,9 @@
                     <a href="" ng-click="durabilityCtrl.orderBy('days')">Durabilidade</a>
                 </th>
                 <th>
+                    <a href="" ng-click="durabilityCtrl.orderBy('type')">Tipo de exposição</a>
+                </th>
+                <th>
                     <a href="" ng-click="durabilityCtrl.orderBy('fileName')">Arquivo</a>
                 </th>
             </thead>
@@ -59,7 +71,7 @@
                     {{durability.created.$date | date:'dd/MM/yyyy'}}
                 </td>
                 <td ng-hide="editing" title={{durability.equipment}}>
-                    {{durability.equipment | limitTo:35}}{{durability.equipment.length > 35 ? '...' : ''}}
+                    {{durability.equipment | limitTo:30}}{{durability.equipment.length > 30 ? '...' : ''}}
                 </td>
                 <td ng-hide="editing">
                     {{durabilityCtrl.printMaterials(durability.material)}}
@@ -67,9 +79,12 @@
                 <td ng-hide="editing">{{durability.days}}
                     {{durability.days>1?'dias':'dia'}}
                 </td>
+                <td ng-hide="editing">
+                    {{durability.type}}
+                </td>
                 <td ng-hide="editing" title={{durability.fileName}}>
-                    <a ng-href="{{durabilityCtrl.getFile(durability.fileName)}}" target="_self" download>
-                        {{durability.fileName | limitTo:30}}{{durability.fileName.length > 30 ? '...' : ''}}
+                    <a ng-href="{{durabilityCtrl.getFile(durability.fileName)}}" target="_self" title={{durability.fileName}} download>
+                        {{durability.fileName | limitTo:20}}{{durability.fileName.length > 20 ? '...' : ''}}
                     </a>
                 </td>
                 <td ng-hide="editing">
@@ -92,6 +107,13 @@
                 </td>
                 <td ng-show="editing">
                     <input ng-model="durability.days" class="form-control" type="number" placeholder="Tempo em dias"/>
+                </td>
+                <td ng-show="editing">
+                    <div class="btn-group">
+                        <span class="control-label">Limitada</span><input type="radio" ng-model="durability.type" ng-dblclick="durability.type=null" value="Limitada"><br/>
+                        <span class="control-label">Comum</span><input type="radio" ng-model="durability.type" ng-dblclick="durability.type=null" value="Comum"><br/>
+                        <span class="control-label">Extendida</span><input type="radio" ng-model="durability.type" ng-dblclick="durability.type=null" value="Extendida">
+                    </div>
                 </td>
                 <td ng-show="editing">
                     <div class="fileUpload btn btn-primary" style="margin:0px;" ng-hide="uploadingBase">
