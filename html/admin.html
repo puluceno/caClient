@@ -1,0 +1,15 @@
+<div ng-controller="adminController as adminCtrl" style="padding-bottom:50px;">
+    <div class="starter-template">
+        <h1>Painel Administrativo</h1>
+    </div>
+    <div class="container">
+        <ul class="nav nav-pills nav-stacked column col-sm-2">
+            <li ng-class="{ active:adminCtrl.isSet(1) }">
+                <a href ng-click="adminCtrl.setTab(1)">Gerenciar Usuários</a>
+            </li>
+        </ul>
+        <div class="column col-sm-10">
+            <div ng-show="adminCtrl.isSet(1)" ng-include="'html/admin/users.html'"></div>
+        </div>
+    </div>
+</div>

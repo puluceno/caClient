@@ -1,0 +1,92 @@
+<div class="col-sm-10">
+    <form name="form.newUserForm" ng-submit="adminCtrl.createUser()" novalidate>
+        <div class="col-sm-3 filters">
+            <p>Nome</p>
+            <input type="text" ng-model="newUser.name" ng-required="true" class="form-control" minlength="3" placeholder="Nome do usuário. Ex: João Pires">
+        </div>
+        <div class="col-sm-3 filters">
+            <p>Login</p>
+            <input type="text" ng-model="newUser.login" ng-required="true" class="form-control" minlength="3" placeholder="Login do usuário. Ex: jpires"/>
+        </div>
+        <div class="col-sm-3 filters form-inline">
+            <p>Senha</p>
+            <input type="checkbox" ng-model="showPassword" title="Exibir a senha"/>
+            <input type="password" ng-model="newUser.password" ng-required="true" class="form-control width90" minlength="4" placeholder="Pelo menos 4 caracteres."/>
+            <span ng-show="showPassword">{{newUser.password}}</span>
+        </div>
+        <div class="col-sm-2 filters">
+            <p>Tipo de usuário</p>
+            <select ng-model="newUser.profile" ng-options="profile.profile as profile.name for profile in profiles" ng-required="true" class="form-control"></select>
+        </div>
+        <div class="col-sm-1 filters">
+            <br/>
+            <button class="btn btn-primary center-block" style="margin-top:10px;" type="submit" ng-disabled="fetching || newUserForm.$invalid">Inserir &raquo;</button>
+        </div>
+    </form>
+    <span ng-show="success" class="text-success h3">{{successMsg}}</span>
+    <span ng-show="error" class="text-danger h3">{{errorMsg}}</span>
+    <hr/>
+    <div style="padding-bottom: 20px;">
+        <table class="table table-striped">
+            <thead style="font-weight: bold;">
+                <th>
+                    <a href="" ng-click="adminCtrl.orderBy('created')">Criado</a>
+                </th>
+                <th>
+                    <a href="" ng-click="adminCtrl.orderBy('name')">Nome</a>
+                </th>
+                <th>
+                    <a href="" ng-click="adminCtrl.orderBy('login')">Login</a>
+                </th>
+                <th>
+                    <a href="" ng-click="adminCtrl.orderBy('profile.name')">Perfil</a>
+                </th>
+            </thead>
+            <tr ng-repeat="user in users | orderBy:orderCriteria:orderDirection" ng-hide="fetching">
+                <td>
+                    {{user.created.$date | date:'dd/MM/yyyy'}}
+                </td>
+                <td ng-hide="editing" title={{user.name}}>
+                    {{user.name | limitTo:30}}{{user.name.length > 30 ? '...' : ''}}
+                </td>
+                <td ng-hide="editing" title={{user.login}}>
+                    {{user.login| limitTo:20}}{{user.login.length > 20 ? '...' : ''}}
+                </td>
+                <td ng-hide="editing">
+                    {{user.profile=='admin'?'Administrador':'Usuário'}}
+                </td>
+                <td ng-hide="editing">
+                    <button class="btn btn-primary center-block" title="Editar" ng-click="editing=true" ng-hide="editing">
+                        <i class="fa fa-pencil-square-o fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td ng-hide="editing" ng-form="deleteUserForm">
+                    <button class="btn btn-primary center-block" title="Remover" ng-click="adminCtrl.delete(user._id.$oid)">
+                        <i class="fa fa-trash-o fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td ng-show="editing">
+                    <input type="text" name="name" ng-model="user.name" ng-required="true" class="form-control" minlength="3" placeholder="Nome do usuário. Ex: João Pires">
+                </td>
+                <td ng-show="editing">
+                    <input type="text" name="login" ng-model="user.login" ng-required="true" class="form-control" minlength="3" placeholder="Login do usuário. Ex: jpires"/>
+                </td>
+                <td ng-show="editing">
+                    <select ng-model="user.profile" ng-options="profile.profile as profile.name for profile in profiles" ng-required="true" class="form-control"></select>
+                </td>
+                <td ng-show="editing">
+                    <button class="btn btn-primary center-block" title="Salvar" type="submit" ng-click="adminCtrl.update(user);editing=false" ng-show="editing">
+                        <i class="fa fa-floppy-o fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+                <td ng-show="editing">
+                    <button class="btn btn-primary center-block" title="Cancelar Edição" ng-click="editing=false" ng-show="editing">
+                        <i class="fa fa-times fa-2x" aria-hidden="true"></i>
+                    </button>
+                </td>
+            </table>
+            <div ng-show="fetching" class="text-center">
+                <i class="fa fa-spinner fa-spin fa-3x"></i>
+            </div>
+        </div>
+    </div>
