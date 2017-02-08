@@ -1,7 +1,7 @@
 app.controller("footerController", ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
 
-    var baseUrl = "http://52.67.252.0:4567/";
-    // var baseUrl = "http://localhost:4567/";
+  // var baseUrl = "http://52.67.252.0:4567/";
+    var baseUrl = "http://localhost:4567/";
     var self = this;
 
     this.getParams = function() {
@@ -119,6 +119,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                     $scope.uploadMessage = data;
                     $scope.uploadingCA = false;
                     $scope.uploadSuccess = true;
+                    angular.element(document.querySelector('#uploadCAFile')).val("");
                     $timeout(function() {
                         $scope.uploadSuccess = false;
                     }, 15000);
@@ -127,6 +128,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                     $scope.uploadMessage = data;
                     $scope.uploadingCA = false;
                     $scope.uploadSuccess = true;
+                    angular.element(document.querySelector('#uploadCAFile')).val("");
                     $timeout(function() {
                         $scope.uploadSuccess = false;
                     }, 15000);
@@ -140,8 +142,12 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
     $scope.formCA = {};
     $scope.reports = [{}];
     $scope.technicalRules = [{}];
-    $scope.frequencies=["125","250","500","1000","2000","3150","4000","6300","8000","NRRsf"];
-    $scope.formCA.attenuationTable = {"frequencies":[125,250,500,1000,2000,3150,4000,6300,8000,"NRRsf"],"dbAttenuations":new Array(10),"deviations":new Array(10)};
+    $scope.frequencies = ["125", "250", "500", "1000", "2000", "3150", "4000", "6300", "8000", "NRRsf"];
+    $scope.formCA.attenuationTable = {
+        "frequencies": [125, 250, 500, 1000, 2000, 3150, 4000, 6300, 8000, "NRRsf"],
+        "dbAttenuations": new Array(10),
+        "deviations": new Array(10)
+    };
 
     this.addReportField = function() {
         $scope.reports.push({});
@@ -161,10 +167,15 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
 
     this.clearForm = function() {
         $scope.formCA = {};
+        $scope.formCA.file = {};
         $scope.reports = [{}];
         $scope.technicalRules = [{}];
-        $scope.frequencies=["125","250","500","1000","2000","3150","4000","6300","8000","NRRsf"];
-        $scope.formCA.attenuationTable = {"frequencies":[125,250,500,1000,2000,3150,4000,6300,8000,"NRRsf"],"dbAttenuations":new Array(10),"deviations":new Array(10)};
+        $scope.frequencies = ["125", "250", "500", "1000", "2000", "3150", "4000", "6300", "8000", "NRRsf"];
+        $scope.formCA.attenuationTable = {
+            "frequencies": [125, 250, 500, 1000, 2000, 3150, 4000, 6300, 8000, "NRRsf"],
+            "dbAttenuations": new Array(10),
+            "deviations": new Array(10)
+        };
         $scope.createCAForm.$setPristine();
     };
 
@@ -224,10 +235,18 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                     }
                 }).success(function(data) {
                     $scope.formCA = data;
+                    if ($scope.formCA.attenuationTable == undefined) {
+                        $scope.formCA.attenuationTable = {
+                            "frequencies": [125, 250, 500, 1000, 2000, 3150, 4000, 6300, 8000, "NRRsf"],
+                            "dbAttenuations": new Array(10),
+                            "deviations": new Array(10)
+                        };
+                    }
                     $scope.formCA.file = file;
                     $scope.formCA.number = parseInt(data.number);
                     $scope.creatingFormCA = false;
                     $scope.formCASuccess = true;
+                    angular.element(document.querySelector('#uploadCAFormFile')).val("");
                     $timeout(function() {
                         $scope.formCASuccess = false;
                     }, 15000);
@@ -236,6 +255,7 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                     $scope.creatingFormCA = false;
                     $scope.formCAError = true;
                     $scope.errorMsgFooter = data == null ? "O servidor está indisponível" : data;
+                    angular.element(document.querySelector('#uploadCAFormFile')).val("");
                     $timeout(function() {
                         $scope.formCAError = false;
                     }, 15000);

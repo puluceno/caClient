@@ -15,7 +15,7 @@
             <div class="fileUpload btn btn-primary btn-sm" ng-hide="uploadingCA">
                 <i class="fa fa-upload" aria-hidden="true"></i>
                 <span>Adicionar um CA através de arquivo</span>
-                <input class="upload" type="file" file-model="newCA" accept='.pdf' onchange="angular.element(this).scope().footerCtrl.uploadCA()"/>
+                <input id="uploadCAFile" class="upload" type="file" file-model="newCA" accept='.pdf' onchange="angular.element(this).scope().footerCtrl.uploadCA()"/>
             </div>
             <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#dialogInsertCA" ng-hide="uploadingCA">
                 <i class="fa fa-upload" aria-hidden="true"></i>
@@ -53,7 +53,7 @@
                             <div class="fileUpload btn btn-primary" style="margin:0px;" ng-hide="uploadingFormCA">
                                 <i class="fa fa-upload" aria-hidden="true"></i>
                                 <span>Anexar arquivo</span>
-                                <input class="upload" type="file" file-model="formCA.file" accept='.pdf' onchange="angular.element(this).scope().footerCtrl.uploadCAFormFile()"/>
+                                <input id="uploadCAFormFile" class="upload" type="file" file-model="formCA.file" accept='.pdf' onchange="angular.element(this).scope().footerCtrl.uploadCAFormFile()"/>
                             </div>
                             <span>{{formCA.file.name}}</span>
                         </div>
@@ -68,8 +68,11 @@
                         <div class="form-group">
                             <label class="control-label">Situação:</label>
                             <div class="btn-group">
-                                <span class="control-label">Válido</span><input type="radio" ng-model="formCA.status" value="Válido">
-                                <span class="control-label">Vencido</span><input type="radio" ng-model="formCA.status" value="Vencido">
+                                <span class="control-label" title="Válido">Válido</span><input type="radio" ng-model="formCA.status" value="Válido">
+                                <span class="control-label" title="Vencido">Vencido</span><input type="radio" ng-model="formCA.status" value="Vencido">
+                                <span class="control-label" title="Cancelado">Cancelado</span><input type="radio" ng-model="formCA.status" value="Cancelado">
+                                <span class="control-label" title-"Suspenso">Suspenso</span><input type="radio" ng-model="formCA.status" value="Suspenso">
+                                <span class="control-label" title="Condicionada À Manutenção Da Certificação Junto Ao Inmetro">Condicionada</span><input type="radio" ng-model="formCA.status" value="Condicionada À Manutenção Da Certificação Junto Ao Inmetro">
                             </div>
                         </div>
                     </div>

@@ -1,9 +1,9 @@
 app.controller("caController", ['$scope', '$http', function($scope, $http) {
 
-    var baseUrl = "http://52.67.252.0:4567/";
-    var downloadUrl = "http://52.67.252.0/CAs/";
-    // var baseUrl = "http://localhost:4567/";
-    // var downloadUrl = "http://localhost:8000/";
+    // var baseUrl = "http://52.67.252.0:4567/";
+    // var downloadUrl = "http://52.67.252.0/CAs/";
+    var baseUrl = "http://localhost:4567/";
+    var downloadUrl = "http://localhost:8000/";
 
     this.initialize = function() {
         $scope.query = {};

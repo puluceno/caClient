@@ -40,6 +40,7 @@
             </div>
         </form>
     </div>
+    <hr/>
     <div class="table-responsive" style="padding-bottom: 20px;">
         <table class="table table-striped">
             <thead style="font-weight: bold;">
@@ -220,34 +221,34 @@
                                             </td>
                                         </tr>
                                         <tr ng-hide="ca.attenuationTable==null">
-                                          <td colspan="2">
-                                            <table class="text-center table-bordered">
-                                              <tr>
-                                                <td>
-                                                  Frequência (Hz):
-                                                </td>
-                                                <td ng-repeat="freq in ca.attenuationTable.frequencies track by $index">
-                                                  {{freq}}
-                                                </td>
-                                              </tr>
-                                              <tr>
-                                                <td>
-                                                  Atenuação db:
-                                                </td>
-                                                <td ng-repeat="db in ca.attenuationTable.dbAttenuations track by $index">
-                                                  {{db}}
-                                                </td>
-                                              </tr>
-                                              <tr>
-                                                <td>
-                                                  Desvio Padrão:
-                                                </td>
-                                                <td ng-repeat="dev in ca.attenuationTable.deviations track by $index">
-                                                  {{dev}}
-                                                </td>
-                                              </tr>
-                                            </table>
-                                          </td>
+                                            <td colspan="2">
+                                                <table class="text-center table-bordered">
+                                                    <tr>
+                                                        <td>
+                                                            Frequência (Hz):
+                                                        </td>
+                                                        <td ng-repeat="freq in ca.attenuationTable.frequencies track by $index">
+                                                            {{freq}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Atenuação db:
+                                                        </td>
+                                                        <td ng-repeat="db in ca.attenuationTable.dbAttenuations track by $index">
+                                                            {{db}}
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            Desvio Padrão:
+                                                        </td>
+                                                        <td ng-repeat="dev in ca.attenuationTable.deviations track by $index">
+                                                            {{dev}}
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
                                         </tr>
                                     </table>
                                 </div>

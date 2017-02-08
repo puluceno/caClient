@@ -20,12 +20,12 @@
         </div>
         <div class="col-sm-1 filters">
             <br/>
-            <button class="btn btn-primary center-block" style="margin-top:10px;" type="submit" ng-disabled="fetching || newUserForm.$invalid">Inserir &raquo;</button>
+            <button class="btn btn-primary center-block" style="margin-top:10px;" type="submit" ng-disabled="fetching || form.newUserForm.$invalid">Inserir &raquo;</button>
         </div>
     </form>
     <span ng-show="success" class="text-success h3">{{successMsg}}</span>
     <span ng-show="error" class="text-danger h3">{{errorMsg}}</span>
-    <hr/>
+    <hr class="width90"/>
     <div style="padding-bottom: 20px;">
         <table class="table table-striped">
             <thead style="font-weight: bold;">

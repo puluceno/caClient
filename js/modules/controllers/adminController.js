@@ -48,7 +48,6 @@ app.controller("adminController", ['$scope', '$http', 'sha256', '$timeout', func
         $scope.fetching = true;
         var fd = new FormData();
         $scope.newUser.password = sha256.convertToSHA256($scope.newUser.password);
-        console.log($scope.newUser.password);
         fd.append("data", angular.toJson($scope.newUser));
         $http.post(baseUrl + "user", fd, {
             headers: {
@@ -59,14 +58,18 @@ app.controller("adminController", ['$scope', '$http', 'sha256', '$timeout', func
                 fd
             }
         }).success(function(data) {
+            if (data == "USER_ALREADY_EXISTS") {
+                $scope.successMsg = "Usuário já existe!"
+            } else {
+                $scope.users = data;
+                $scope.successMsg = "Usuário criado!"
+            }
             $scope.fetching = false;
-            $scope.users = data;
             $scope.success = true;
-            $scope.successMsg = "Usuário criado!"
             $timeout(function() {
                 $scope.success = false;
             }, 12000);
-        }).error(function(status) {
+        }).error(function(data) {
             $scope.error = true;
             $scope.errorMsg = "Aconteceu um erro!"
             $scope.fetching = false;
@@ -78,10 +81,10 @@ app.controller("adminController", ['$scope', '$http', 'sha256', '$timeout', func
         $scope.form.newUserForm.$setPristine();
     };
 
-    this.update = function(user) {
+    this.update = function(updateUser) {
         $scope.fetching = true;
         var fd = new FormData();
-        fd.append("data", angular.toJson(user));
+        fd.append("data", angular.toJson(updateUser));
         $http.post(baseUrl + "user", fd, {
             headers: {
                 'Content-Type': undefined
@@ -91,10 +94,15 @@ app.controller("adminController", ['$scope', '$http', 'sha256', '$timeout', func
                 fd
             }
         }).then(function successCallback(data) {
-                $scope.users = data.data;
+                if (data.data == "USER_ALREADY_EXISTS") {
+                    $scope.successMsg = "Usuário já existe!"
+                } else {
+                    $scope.users = data;
+                    $scope.successMsg = "Usuário atualizado!"
+                    $scope.users = data.data;
+                }
                 $scope.fetching = false;
                 $scope.success = true;
-                $scope.successMsg = "Usuário atualizado!"
                 $timeout(function() {
                     $scope.success = false;
                 }, 12000);
