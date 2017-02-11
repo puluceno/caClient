@@ -1,15 +1,13 @@
 <footer class="footer" ng-controller="footerController as footerCtrl">
-    <span ng-show="formCASuccess" class="text-success h3">{{successMsgFooter}}</span>
-    <span ng-show="formCAError" class="text-danger h3">{{errorMsgFooter}}</span>
     <div class="container">
+        <span ng-show="success" class="text-success h3">{{successMsgFooter}}</span>
+        <span ng-show="error" class="text-danger h3">{{errorMsgFooter}}</span>
         <form name="formFileUrl" class="form-inline small text-center" ng-submit="footerCtrl.updateFileUrl()" novalidate>
             <span>Arquivo de atualização:
             </span>
             <input ng-model="fileUrl" class="form-control fileUrlInput" type="text"/>
             <button class="btn btn-primary btn-sm" type="submit" ng-disabled="fileUrlUpdating">Atualizar&raquo;</button>
-            <span ng-show="fileUrlUpdatedSucess" class="text-success h3">
-                Endereço atualizado!
-            </span>
+            <i class="fa fa-spinner fa-spin fa" ng-show="fileUrlUpdating"></i>
         </form>
         <div class="text-center text-muted small">
             <div class="fileUpload btn btn-primary btn-sm" ng-hide="uploadingCA">
@@ -17,28 +15,22 @@
                 <span>Adicionar um CA através de arquivo</span>
                 <input id="uploadCAFile" class="upload" type="file" file-model="newCA" accept='.pdf' onchange="angular.element(this).scope().footerCtrl.uploadCA()"/>
             </div>
-            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#dialogInsertCA" ng-hide="uploadingCA">
+            <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#dialogInsertCA" ng-disabled="uploadingCA">
                 <i class="fa fa-upload" aria-hidden="true"></i>
                 Adicionar um CA manualmente
             </button>
             <i class="fa fa-spinner fa-spin fa" ng-show="uploadingCA"></i>
-            <span ng-show="uploadSuccess" class="b text-info h3">{{uploadMessage}}</span>
         </div>
         <div class="text-center text-muted small">
             <span>Existem
-                {{CAcount}}
+                {{caCount}}
                 CA no sistema.
             </span>
             <span>
                 Dados atualizados em:
             </span>{{lastUpdated}}
-            <button class="btn btn-primary btn-xs" type="button" ng-disabled="databaseUpdating" ng-click="footerCtrl.updateDatabase()" ng-hide="databaseUpdating">Atualizar agora!&raquo;</button>
+            <button class="btn btn-primary btn-xs" type="button" ng-disabled="databaseUpdating" ng-click="footerCtrl.updateDatabase()" ng-disabled="databaseUpdating">Atualizar agora!&raquo;</button>
             <i class="fa fa-spinner fa-spin fa" ng-show="databaseUpdating"></i>
-            <span class="b text-danger h3" ng-show="error.length>0">{{error}}</span>
-            <span ng-show="databaseUpdateSuccess" class="text-success h3">
-                {{updateCount}}
-                CA adicionados ao sistema.
-            </span>
         </div>
     </div>
 

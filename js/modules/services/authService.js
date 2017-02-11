@@ -2,9 +2,9 @@
 
     'use strict';
 
-    angular.module('auth-service',[]).factory('authService', function($q, $state, $localStorage, Http, UserService, $rootScope) {
+    angular.module('pulu.auth',[]).factory('authService', function($q, $state, $localStorage, Http, UserService, $rootScope) {
 
-        var prefix = 'sc.logged.';
+        var prefix = 'logged';
         var events = { in: prefix + 'in',
             out: prefix + 'out'
         };
@@ -63,23 +63,19 @@
             /**
              *  Login for ADMIN users
              */
-            userLogin: function(user) {
+            userLogin: function(fd) {
                 posting.login = true;
                 var process = $q.defer();
-                Http.post('/auth/v1/user/login', user).then(function(response) {
+                Http.post('/login', fd).then(function(response) {
                     authenticationSucceeded(response);
                     process.resolve(response.user);
                     posting.login = false;
                 }, function(response) {
                     if (response.error) {
-                        if (response.error.message.contains('INVALID_LOGIN')) {
-                            process.reject('O email e/ou senha de autenticação não é válido.');
-                        } else if (response.error.message.contains('NONEXISTENT_USER')) {
-                            process.reject('O email inserido não possui cadastrado no sistema.');
-                        } else if (response.error.message.contains('USER_INACTIVE')) {
-                            process.reject('O usuário está inativo.');
-                        } else if (response.error.message.contains('DEFAULT')) {
-                            process.reject('Esta é uma sessão apenas para administradores. Por favor, faça login como aluno.');
+                        if (response.error.message.contains('PASSWORD_INVALID')) {
+                            process.reject('Senha incorreta.');
+                        } else if (response.error.message.contains('USER_NON_EXISTENT')) {
+                            process.reject('Usuário não encontrado, favor contatar o administrador do sistema.');
                         } else {
                             process.reject(response);
                         }
@@ -93,29 +89,6 @@
              */
             logout: function() {
                 revokeUser();
-            },
-
-            /**
-             *
-             */
-            reset: function(newPassword, resetToken) {
-                var process = $q.defer();
-                Http.post('/auth/v1/password/reset', {
-                    password: newPassword,
-                    token: resetToken
-                }).then(function(response) {
-                    process.resolve(response);
-                }, function(response) {
-                    if (response.error.message.contains('NONEXISTENT_TOKEN')) {
-                        process.reject('Desculpe, o token da solicitação não existe ou já foi utilizado.');
-                        $state.go('website-auth-login');
-                    } else if (response.error.message.contains('EXPIRED_TOKEN')) {
-                        process.reject('O token da solicitação expirou. Por favor, faça uma nova solicitação de alteração em esqueci minha senha.');
-                    } else {
-                        process.reject('Não foi possível alterar sua senha no momento. Por favor, tente novamente mais tarde.');
-                    }
-                });
-                return process.promise;
             },
 
             /**

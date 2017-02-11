@@ -40,8 +40,14 @@
             </div>
         </form>
     </div>
-    <span ng-show="success" class="text-success">{{successMsg}}</span>
-    <span ng-show="error" class="text-danger">{{errorMsg}}</span>
+    <span class="pull-right">
+        Existem
+        {{durabilities.length}}
+        durabilidades cadastradas
+    </span>
+    <br/>
+    <span ng-show="success" class="text-success h3">{{successMsg}}</span>
+    <span ng-show="error" class="text-danger h3">{{errorMsg}}</span>
     <hr/>
     <div class="table-responsive" style="padding-bottom: 20px;">
         <table class="table table-striped">

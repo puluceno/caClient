@@ -1,142 +1,111 @@
-app.controller("footerController", ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
-
-  // var baseUrl = "http://52.67.252.0:4567/";
-    var baseUrl = "http://localhost:4567/";
+app.controller("footerController", ['$scope', 'Http', '$timeout', function($scope, Http, $timeout) {
     var self = this;
 
     this.getParams = function() {
-        $http({
-            url: baseUrl + "params",
-            method: "GET"
-        }).success(function(data) {
-            $scope.fileUrl = data.fileUrl;
-            $scope.lastUpdated = data.lastUpdated;
-            $scope.error = "";
-            $scope.fetching = false;
-        }).error(function() {
-            $scope.error = "Aconteceu um erro!"
-            $scope.fetching = false;
-        });
+        Http.get("params")
+            .then(function successCallback(data) {
+                $scope.fileUrl = data.fileUrl;
+                $scope.lastUpdated = data.lastUpdated;
+                $scope.fetching = false;
+            }, function errorCallback(data) {
+                $scope.error = true;
+                $scope.errorMsgFooter = "Falha ao comunicar com o servidor."
+                $scope.fetching = false;
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            })
     };
 
     this.getCount = function() {
-        $http({
-            url: baseUrl + "ca/count",
-            method: "GET"
-        }).success(function(data) {
-            $scope.CAcount = data;
-            $scope.error = "";
-            $scope.fetching = false;
-        }).error(function() {
-            $scope.error = "Aconteceu um erro!"
-            $scope.fetching = false;
-        });
+        Http.get("ca/count")
+            .then(function successCallback(data) {
+                $scope.caCount = data;
+                $scope.fetching = false;
+            }, function errorCallback(data) {
+                $scope.error = true;
+                $scope.errorMsgFooter = "Falha ao comunicar com o servidor."
+                $scope.fetching = false;
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            })
     };
 
-    this.getEquipments = function() {
-        $http({
-            url: baseUrl + "equipment",
-            method: "GET"
-        }).success(function(data) {
-            $scope.equipments = data;
-        }).error(function() {
-            $scope.insertError = true;
-            $scope.errorMsg = "Aconteceu um erro!"
-            $timeout(function() {
-                $scope.error = false;
-            }, 15000);
-        });
-    };
-
-    this.getCount();
     this.getParams();
-    this.getEquipments();
+    this.getCount();
 
     this.updateFileUrl = function() {
         $scope.fileUrlUpdating = true;
-        $http({
-            url: baseUrl + "fileUrl",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            data: $scope.fileUrl
-        }).success(function(data) {
-            $scope.fileUrl = data.fileUrl;
-            $scope.lastUpdated = data.lastUpdated;
-            $scope.error = "";
-            $scope.fileUrlUpdating = false;
-            $scope.fileUrlUpdatedSucess = true;
-            $timeout(function() {
-                $scope.fileUrlUpdatedSucess = false;
-            }, 8000);
-        }).error(function() {
-            $scope.error = "Aconteceu um erro!"
-            $scope.fileUrlUpdatedSucess = false;
-            $scope.fileUrlUpdating = false;
-        });
+        Http.post("fileUrl", $scope.fileUrl)
+            .then(function successCallback(data) {
+                $scope.fileUrl = data.fileUrl;
+                $scope.lastUpdated = data.lastUpdated;
+                $scope.success = true;
+                $scope.fileUrlUpdating = false;
+                $scope.successMsgFooter = "Endereço atualizado!"
+                $timeout(function() {
+                    $scope.success = false;
+                }, 15000);
+            }, function errorCallback(data) {
+                $scope.error = true;
+                $scope.fileUrlUpdating = false;
+                $scope.errorMsgFooter = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            })
     };
 
     this.updateDatabase = function() {
         $scope.databaseUpdating = true;
-        $http({
-            url: baseUrl + "updateDatabase",
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            }
-        }).success(function(data) {
-            $scope.lastUpdated = data.lastUpdated;
-            $scope.updateCount = data.updateCount;
-            $scope.error = "";
-            $scope.databaseUpdating = false;
-            $scope.databaseUpdateSuccess = true;
-            $timeout(function() {
-                $scope.databaseUpdateSuccess = false;
-            }, 8000);
-        }).error(function() {
-            $scope.databaseUpdating = false;
-            $scope.error = "Aconteceu um erro!"
-        });
+        Http.post("updateDatabase")
+            .then(function successCallback(data) {
+                $scope.lastUpdated = data.lastUpdated;
+                $scope.success = true;
+                $scope.databaseUpdating = false;
+                $scope.successMsgFooter = data.updateCount + " CA adicionados ao sistema.";
+                $timeout(function() {
+                    $scope.success = false;
+                }, 15000);
+            }, function errorCallback(data) {
+                $scope.error = true;
+                $scope.databaseUpdating = false;
+                $scope.errorMsgFooter = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            })
     };
 
     this.uploadCA = function() {
         $scope.uploadingCA = true;
         $timeout(function() {
             $scope.fileUrlUpdatedSucess = false;
-
             var file = $scope.newCA;
-            var uploadUrl = baseUrl + "ca";
             var fd = new FormData();
             fd.append('newCA', file);
-            $http.post(uploadUrl, fd, {
-                    transformRequest: angular.identity,
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                })
-                .success(function(data) {
-                    $scope.uploadMessage = data;
+            Http.postFormData("ca", fd)
+                .then(function successCallback(data) {
+                    $scope.successMsgFooter = data;
                     $scope.uploadingCA = false;
-                    $scope.uploadSuccess = true;
+                    $scope.success = true;
                     angular.element(document.querySelector('#uploadCAFile')).val("");
                     $timeout(function() {
-                        $scope.uploadSuccess = false;
+                        $scope.success = false;
                     }, 15000);
-                })
-                .error(function(data) {
-                    $scope.uploadMessage = data;
+                }, function errorCallback(data) {
+                    $scope.errorMsgFooter = data;
                     $scope.uploadingCA = false;
-                    $scope.uploadSuccess = true;
+                    $scope.error = true;
                     angular.element(document.querySelector('#uploadCAFile')).val("");
                     $timeout(function() {
-                        $scope.uploadSuccess = false;
+                        $scope.error = false;
                     }, 15000);
                 });
             file = null;
             fd = null;
-
-        }, 3000);
+        }, 1000);
     };
 
     $scope.formCA = {};
@@ -190,33 +159,27 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
             var fd = new FormData();
             fd.append("file", file);
             fd.append("data", angular.toJson($scope.formCA));
-            $http.post(baseUrl + "caform", fd, {
-                headers: {
-                    'Content-Type': undefined
-                },
-                transformRequest: angular.identity,
-                params: {
-                    fd
-                }
-            }).success(function(data) {
-                $scope.creatingFormCA = false;
-                $scope.formCASuccess = true;
-                $scope.successMsgFooter = data;
-                self.getCount();
-                // self.clearForm();
-                $timeout(function() {
-                    $scope.formCASuccess = false;
-                }, 15000);
-            }).error(function(data) {
-                $scope.creatingFormCA = false;
-                $scope.formCAError = true;
-                $scope.errorMsgFooter = data == null ? "O servidor está indisponível" : data;
-                $timeout(function() {
-                    $scope.formCAError = false;
-                }, 15000);
-            });
+
+            Http.postFormData("caform", fd)
+                .then(function successCallback(data) {
+                    $scope.creatingFormCA = false;
+                    $scope.success = true;
+                    $scope.successMsgFooter = data;
+                    self.getCount();
+                    // self.clearForm();
+                    $timeout(function() {
+                        $scope.success = false;
+                    }, 15000);
+                }, function errorCallback(data) {
+                    $scope.creatingFormCA = false;
+                    $scope.error = true;
+                    $scope.errorMsgFooter = data == null ? "Falha ao comunicar com o servidor." : data;
+                    $timeout(function() {
+                        $scope.error = false;
+                    }, 15000);
+                });
             angular.element(document.querySelector('#dialogInsertCA')).modal('hide');
-        }, 1500);
+        }, 1000);
     };
 
     this.uploadCAFormFile = function() {
@@ -225,15 +188,9 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
             var file = $scope.formCA.file
             var fd = new FormData();
             fd.append("file", file);
-            $http.post(baseUrl + "caformfile", fd, {
-                    headers: {
-                        'Content-Type': undefined
-                    },
-                    transformRequest: angular.identity,
-                    params: {
-                        fd
-                    }
-                }).success(function(data) {
+
+            Http.postFormData("caformfile", fd)
+                .then(function successCallback(data) {
                     $scope.formCA = data;
                     if ($scope.formCA.attenuationTable == undefined) {
                         $scope.formCA.attenuationTable = {
@@ -245,23 +202,21 @@ app.controller("footerController", ['$scope', '$http', '$timeout', function($sco
                     $scope.formCA.file = file;
                     $scope.formCA.number = parseInt(data.number);
                     $scope.creatingFormCA = false;
-                    $scope.formCASuccess = true;
+                    $scope.success = true;
                     angular.element(document.querySelector('#uploadCAFormFile')).val("");
                     $timeout(function() {
-                        $scope.formCASuccess = false;
+                        $scope.success = false;
                     }, 15000);
-                })
-                .error(function(data) {
+                }, function errorCallback(data) {
                     $scope.creatingFormCA = false;
-                    $scope.formCAError = true;
-                    $scope.errorMsgFooter = data == null ? "O servidor está indisponível" : data;
+                    $scope.error = true;
+                    $scope.errorMsgFooter = data == null ? "Falha ao comunicar com o servidor." : data;
                     angular.element(document.querySelector('#uploadCAFormFile')).val("");
                     $timeout(function() {
-                        $scope.formCAError = false;
+                        $scope.error = false;
                     }, 15000);
                 });
-        }, 1500);
+        }, 1000);
     };
-
 
 }]);

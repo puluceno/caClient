@@ -1,9 +1,6 @@
-app.controller("caController", ['$scope', '$http', function($scope, $http) {
-
-    // var baseUrl = "http://52.67.252.0:4567/";
+app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $timeout, Http) {
+    var downloadUrl = 'http://localhost:8000/';
     // var downloadUrl = "http://52.67.252.0/CAs/";
-    var baseUrl = "http://localhost:4567/";
-    var downloadUrl = "http://localhost:8000/";
 
     this.initialize = function() {
         $scope.query = {};
@@ -31,20 +28,20 @@ app.controller("caController", ['$scope', '$http', function($scope, $http) {
             $scope.query.status = null;
         }
 
-        $http({
-            url: baseUrl + "ca",
-            method: "GET",
-            params: $scope.query
-        }).success(function(data) {
-            $scope.count = data[data.length - 1].count;
-            data.splice(-1, 1);
-            $scope.cas = data;
-            $scope.error = "";
-            $scope.fetching = false;
-        }).error(function() {
-            $scope.error = "Aconteceu um erro!"
-            $scope.fetching = false;
-        });
+        Http.get("ca", $scope.query)
+            .then(function successCallback(data) {
+                $scope.count = data[data.length - 1].count;
+                data.splice(-1, 1);
+                $scope.cas = data;
+                $scope.fetching = false;
+            }, function errorCallback(data) {
+                $scope.fetching = false;
+                $scope.error = true;
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.error = false;
+                }, 20000);
+            });
 
         $scope.searchForm.$setPristine();
         this.initialize();
@@ -62,9 +59,7 @@ app.controller("caController", ['$scope', '$http', function($scope, $http) {
     this.diffCheck = function(ca) {
         if ($scope.cas.length > 0) {
             for (var i = 0; i < $scope.cas.length; i++) {
-                if (((ca.approvedFor != $scope.cas[i].approvedFor) && (ca.number == $scope.cas[i].number)))
-                 //|| ((ca.number == $scope.cas[i].number) && (ca.date != $scope.cas[i].date)))
-                 {
+                if (((ca.approvedFor != $scope.cas[i].approvedFor) && (ca.number == $scope.cas[i].number))) {
                     return true;
                 }
             }

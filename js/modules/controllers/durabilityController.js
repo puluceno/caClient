@@ -1,53 +1,45 @@
-app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout', function($scope, $http, Upload, $timeout) {
-    // var baseUrl = "http://52.67.252.0:4567/";
+app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', function($scope, Http, Upload, $timeout) {
     // var downloadUrl = "http://52.67.252.0/files/";
-    var baseUrl = "http://localhost:4567/";
     var downloadUrl = "http://localhost:8000/";
     var self = this;
 
     this.getDurabilities = function() {
-        $http({
-            url: baseUrl + "durability",
-            method: "GET"
-        }).success(function(data) {
-            $scope.durabilities = data;
-        }).error(function() {
-            $scope.insertError = true;
-            $scope.errorMsg = "Aconteceu um erro!"
-            $timeout(function() {
-                $scope.error = false;
-            }, 12000);
-        });
+        Http.get("durability")
+            .then(function successCallback(data) {
+                $scope.durabilities = data;
+            }, function errorCallback(data) {
+                $scope.insertError = true;
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            })
     };
 
     this.getEquipments = function() {
-        $http({
-            url: baseUrl + "equipment",
-            method: "GET"
-        }).success(function(data) {
-            $scope.equipments = data;
-        }).error(function() {
-            $scope.insertError = true;
-            $scope.errorMsg = "Aconteceu um erro!"
-            $timeout(function() {
-                $scope.error = false;
-            }, 12000);
-        });
+        Http.get("equipment")
+            .then(function successCallback(data) {
+                $scope.equipments = data;
+            }, function errorCallback(data) {
+                $scope.insertError = true;
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            })
     };
 
     this.getMaterials = function() {
-        $http({
-            url: baseUrl + "material",
-            method: "GET"
-        }).success(function(data) {
-            $scope.materials = data;
-        }).error(function() {
-            $scope.insertError = true;
-            $scope.errorMsg = "Aconteceu um erro!"
-            $timeout(function() {
-                $scope.error = false;
-            }, 12000);
-        });
+        Http.get("material")
+            .then(function successCallback(data) {
+                $scope.materials = data;
+            }, function errorCallback(data) {
+                $scope.insertError = true;
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            })
     };
 
     this.init = function() {
@@ -66,31 +58,24 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
         var fd = new FormData();
         fd.append("file", file);
         fd.append("data", angular.toJson($scope.newDurability));
-        $http.post(baseUrl + "durability", fd, {
-            headers: {
-                'Content-Type': undefined
-            },
-            transformRequest: angular.identity,
-            params: {
-                fd
-            }
-        }).success(function(data) {
-            $scope.fetching = false;
-            $scope.durabilities = data;
-            $scope.success = true;
-            $scope.successMsg = "Durabilidade adicionada!"
-            self.getMaterials();
-            $timeout(function() {
-                $scope.success = false;
-            }, 12000);
-        }).error(function(status) {
-            $scope.insertError = true;
-            $scope.errorMsg = "Aconteceu um erro!"
-            $scope.fetching = false;
-            $timeout(function() {
-                $scope.error = false;
-            }, 12000);
-        });
+        Http.postFormData("durability", fd)
+            .then(function successCallback(data) {
+                $scope.fetching = false;
+                $scope.durabilities = data;
+                $scope.success = true;
+                $scope.successMsg = "Durabilidade adicionada!"
+                self.getMaterials();
+                $timeout(function() {
+                    $scope.success = false;
+                }, 15000);
+            }, function errorCallback(data) {
+                $scope.insertError = true;
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
+                $scope.fetching = false;
+                $timeout(function() {
+                    $scope.error = false;
+                }, 15000);
+            });
         $scope.createDurabilityForm.$setPristine();
         $scope.newDurability = {};
     };
@@ -101,67 +86,53 @@ app.controller("durabilityController", ['$scope', '$http', 'Upload', '$timeout',
         var fd = new FormData();
         fd.append("file", file);
         fd.append("data", angular.toJson(durability));
-        $http.post(baseUrl + "durability", fd, {
-            headers: {
-                'Content-Type': undefined
-            },
-            transformRequest: angular.identity,
-            params: {
-                fd
-            }
-        }).then(function successCallback(data) {
-                $scope.durabilities.length = 0;
-                Array.prototype.push.apply($scope.durabilities, data.data);
-                $scope.fetching = false;
+        Http.postFormData("durability", fd)
+            .then(function successCallback(data) {
+                    $scope.durabilities.length = 0;
+                    Array.prototype.push.apply($scope.durabilities, data);
+                    $scope.fetching = false;
+                    $scope.success = true;
+                    $scope.successMsg = "Durabilidade atualizada!"
+                    self.getMaterials();
+                    $timeout(function() {
+                        $scope.success = false;
+                    }, 15000);
+                },
+                function errorCallback(status) {
+                    $scope.error = true;
+                    $scope.errorMsg = "Falha ao comunicar com o servidor."
+                    $scope.fetching = false;
+                    $timeout(function() {
+                        $scope.error = false;
+                    }, 15000);
+                });
+    };
+
+    this.delete = function(id) {
+        $scope.fetching = true;
+
+        Http.deleteParam("durability", id)
+            .then(function successCallback(data) {
+                $scope.durabilities = data;
                 $scope.success = true;
-                $scope.successMsg = "Durabilidade atualizada!"
-                self.getMaterials();
+                $scope.successMsg = "Durabilidade removida!"
+                $scope.fetching = false;
                 $timeout(function() {
                     $scope.success = false;
-                }, 12000);
-            },
-            function errorCallback(status) {
-                $scope.error = true;
-                $scope.errorMsg = "Aconteceu um erro!"
+                }, 15000);
+            }, function errorCallback(data) {
+                $scope.insertError = true;
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
                 $scope.fetching = false;
                 $timeout(function() {
                     $scope.error = false;
-                }, 12000);
-            });
+                }, 15000);
+            })
     };
 
     this.orderBy = function(field) {
         $scope.orderCriteria = field;
         $scope.orderDirection = !$scope.orderDirection;
-    };
-
-    this.delete = function(id) {
-        $scope.fetching = true;
-        $http({
-            url: baseUrl + "durability",
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            params: {
-                "id": id
-            }
-        }).success(function(data) {
-            $scope.durabilities = data;
-            $scope.success = true;
-            $scope.successMsg = "Durabilidade removida!"
-            $scope.fetching = false;
-            $timeout(function() {
-                $scope.success = false;
-            }, 12000);
-        }).error(function() {
-            $scope.insertError = true;
-            $scope.errorMsg = "Aconteceu um erro!"
-            $scope.fetching = false;
-            $timeout(function() {
-                $scope.error = false;
-            }, 12000);
-        });
     };
 
     this.getFile = function(fileName) {

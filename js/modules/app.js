@@ -1,4 +1,4 @@
-    var app = angular.module("caApp", ['ngTagsInput', 'ui.bootstrap', 'ngFileUpload', 'angular-encryption', 'auth-service']).config(function($sceDelegateProvider) {
+    var app = angular.module("caApp", ['ngTagsInput', 'ui.bootstrap', 'ngFileUpload', 'angular-encryption', 'pulu.auth', 'pulu.network']).config(function($sceDelegateProvider) {
         $sceDelegateProvider.resourceUrlWhitelist([
             // Allow same origin resource loads.
             'self',

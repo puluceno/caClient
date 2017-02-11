@@ -33,13 +33,13 @@
 
             </div>
             <div class="col-sm-4 text-center" ng-if="cas.length>=0 || error">
-                <span class="b text-danger" ng-hide="cas.length>0">{{error}}</span>
                 <span class="b text-info" ng-show="count!=undefined">{{count}}
                     CAs encontrados. Exibindo
                     {{cas.length}}</span>
             </div>
         </form>
     </div>
+    <span class="b text-danger h3" ng-show="error">{{errorMsg}}</span>
     <hr/>
     <div class="table-responsive" style="padding-bottom: 20px;">
         <table class="table table-striped">
