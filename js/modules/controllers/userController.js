@@ -10,27 +10,27 @@ app.controller("userController", ['$scope', 'sha256', '$timeout', 'Http', functi
             .then(function successCallback(data) {
                 if (data == "USER_NON_EXISTENT") {
                     $scope.error = true;
-                    $scope.mainErrorMsg = "Usuário não encontrado, favor contatar o administrador do sistema."
+                    $scope.errorMsg = "Usuário não encontrado, favor contatar o administrador do sistema."
                     $timeout(function() {
                         $scope.error = false;
-                    }, 15000);
+                    }, 10000);
                 } else if (data == "PASSWORD_INVALID") {
                     $scope.error = true;
-                    $scope.mainErrorMsg = "Senha incorreta!"
+                    $scope.errorMsg = "Senha incorreta!"
                     $timeout(function() {
                         $scope.error = false;
-                    }, 15000);
+                    }, 10000);
                 } else {
                     $scope.session = data;
                     $scope.success = true;
-                    $scope.mainSuccessMsg = "Bem vindo " + $scope.session.name + "!";
+                    $scope.successMsg = "Bem vindo " + $scope.session.name + "!";
                     $timeout(function() {
                         $scope.success = false;
                     }, 15000);
                 }
             }, function errorCallback(data) {
                 $scope.error = true;
-                $scope.mainErrorMsg = "Falha ao comunicar com o servidor."
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
                 $timeout(function() {
                     $scope.error = false;
                 }, 15000);
@@ -47,7 +47,7 @@ app.controller("userController", ['$scope', 'sha256', '$timeout', 'Http', functi
                 angular.element(document.querySelector('#changePasswordModal')).modal('hide');
                 $scope.changingPassword = false;
                 $scope.success = true;
-                $scope.mainSuccessMsg = "Senha alterada com sucesso!";
+                $scope.successMsg = "Senha alterada com sucesso!";
                 $timeout(function() {
                     $scope.success = false;
                 }, 15000);
@@ -55,7 +55,7 @@ app.controller("userController", ['$scope', 'sha256', '$timeout', 'Http', functi
                 angular.element(document.querySelector('#changePasswordModal')).modal('hide');
                 $scope.changingPassword = false;
                 $scope.error = true;
-                $scope.mainErrorMsg = "Falha ao comunicar com o servidor."
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
                 $timeout(function() {
                     $scope.error = false;
                 }, 15000);

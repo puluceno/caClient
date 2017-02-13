@@ -2,7 +2,7 @@
 
   'use strict';
 
-  angular.module('shift.user').factory('UserService',
+  angular.module('pulu.user',[]).factory('UserService',
     function($log, $q, Http, Storage) {
 
       var loggedUser, userStorage = {},
