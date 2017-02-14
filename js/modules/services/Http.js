@@ -54,7 +54,7 @@
                             }
                         })
                         .catch(function(err) {
-                            process.reject(err && err.error);
+                            process.reject(err && err);
                         });
                     return process.promise;
                 },
@@ -80,7 +80,7 @@
                             }
                         })
                         .catch(function(err) {
-                            process.reject(err && err.error);
+                            process.reject(err);
                         });
                     return process.promise;
                 },

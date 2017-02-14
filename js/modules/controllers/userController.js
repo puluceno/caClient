@@ -1,41 +1,26 @@
-app.controller("userController", ['$scope', 'sha256', '$timeout', 'Http', function($scope, sha256, $timeout, Http) {
-    $scope.session = {};
+app.controller('userController', ['$scope', 'sha256', '$timeout', 'Http', 'AuthService', 'UserService', function($scope, sha256, $timeout, Http, AuthService, UserService) {
 
     this.doLogin = function() {
         $scope.loggingIn = true;
         var fd = new FormData();
         $scope.user.password = sha256.convertToSHA256($scope.user.password);
         fd.append("data", angular.toJson($scope.user));
-        Http.postFormData("login", fd)
-            .then(function successCallback(data) {
-                if (data == "USER_NON_EXISTENT") {
-                    $scope.error = true;
-                    $scope.errorMsg = "Usuário não encontrado, favor contatar o administrador do sistema."
-                    $timeout(function() {
-                        $scope.error = false;
-                    }, 10000);
-                } else if (data == "PASSWORD_INVALID") {
-                    $scope.error = true;
-                    $scope.errorMsg = "Senha incorreta!"
-                    $timeout(function() {
-                        $scope.error = false;
-                    }, 10000);
-                } else {
-                    $scope.session = data;
-                    $scope.success = true;
-                    $scope.successMsg = "Bem vindo " + $scope.session.name + "!";
-                    $timeout(function() {
-                        $scope.success = false;
-                    }, 15000);
-                }
+        AuthService.userLogin(fd)
+            .then(function successCallback() {
+                $scope.session = AuthService.getSession().info;
+                $scope.success = true;
+                $scope.successMsg = "Bem vindo " + $scope.session.name + "!";
+                $timeout(function() {
+                    $scope.success = false;
+                }, 10000);
             }, function errorCallback(data) {
                 $scope.error = true;
-                $scope.errorMsg = "Falha ao comunicar com o servidor."
+                $scope.errorMsg = data;
                 $timeout(function() {
                     $scope.error = false;
-                }, 15000);
+                }, 10000);
             });
-        $scope.loggingIn = false;
+        $scope.loggingIn = AuthService.isPostingLogin();
         $scope.user = {};
     };
 
@@ -65,8 +50,12 @@ app.controller("userController", ['$scope', 'sha256', '$timeout', 'Http', functi
     };
 
     this.logout = function() {
-        $scope.user.logged = false;
+        AuthService.logout();
         $scope.user = {};
     };
+
+    this.isAuthenticated = function() {
+        return AuthService.isAuthenticated();
+    }
 
 }]);
