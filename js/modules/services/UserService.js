@@ -109,11 +109,9 @@
                 fetchUserInfo: function() {
                     var process = $q.defer();
                     fetchingUser = true;
-                    Http.get('user/info').then(function(response) {
-                        console.log(response);
+                    Http.get('api/user/info').then(function(response) {
                         fetchingUser = false;
                         loggedUser = response;
-                        loggedUser.letter = response.name.charAt(0);
                         loadUserStorage();
                         process.resolve(response);
                     }, function(response) {

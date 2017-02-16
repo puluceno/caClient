@@ -4,7 +4,7 @@ app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', 
     var self = this;
 
     this.getDurabilities = function() {
-        Http.get("durability")
+        Http.get("api/durability")
             .then(function successCallback(data) {
                 $scope.durabilities = data;
             }, function errorCallback(data) {
@@ -17,7 +17,7 @@ app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', 
     };
 
     this.getEquipments = function() {
-        Http.get("equipment")
+        Http.get("api/equipment")
             .then(function successCallback(data) {
                 $scope.equipments = data;
             }, function errorCallback(data) {
@@ -30,7 +30,7 @@ app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', 
     };
 
     this.getMaterials = function() {
-        Http.get("material")
+        Http.get("api/material")
             .then(function successCallback(data) {
                 $scope.materials = data;
             }, function errorCallback(data) {
@@ -58,7 +58,7 @@ app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', 
         var fd = new FormData();
         fd.append("file", file);
         fd.append("data", angular.toJson($scope.newDurability));
-        Http.postFormData("durability", fd)
+        Http.postFormData("api/durability", fd)
             .then(function successCallback(data) {
                 $scope.fetching = false;
                 $scope.durabilities = data;
@@ -86,7 +86,7 @@ app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', 
         var fd = new FormData();
         fd.append("file", file);
         fd.append("data", angular.toJson(durability));
-        Http.postFormData("durability", fd)
+        Http.postFormData("api/durability", fd)
             .then(function successCallback(data) {
                     $scope.durabilities.length = 0;
                     Array.prototype.push.apply($scope.durabilities, data);
@@ -111,7 +111,7 @@ app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', 
     this.delete = function(id) {
         $scope.fetching = true;
 
-        Http.deleteParam("durability", id)
+        Http.deleteParam("api/durability", id)
             .then(function successCallback(data) {
                 $scope.durabilities = data;
                 $scope.success = true;

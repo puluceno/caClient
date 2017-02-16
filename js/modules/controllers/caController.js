@@ -28,7 +28,7 @@ app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $t
             $scope.query.status = null;
         }
 
-        Http.get("ca", $scope.query)
+        Http.get("api/ca", $scope.query)
             .then(function successCallback(data) {
                 $scope.count = data[data.length - 1].count;
                 data.splice(-1, 1);

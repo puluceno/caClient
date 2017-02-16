@@ -1,5 +1,5 @@
-<footer class="footer" ng-controller="footerController as footerCtrl">
-    <div class="container">
+<footer class="navbar-default navbar-fixed-bottom" ng-controller="footerController as footerCtrl">
+    <div class="container-fluid">
         <span ng-show="success" class="text-success h3">{{successMsgFooter}}</span>
         <span ng-show="error" class="text-danger h3">{{errorMsgFooter}}</span>
         <form name="formFileUrl" class="form-inline small text-center" ng-submit="footerCtrl.updateFileUrl()" novalidate>

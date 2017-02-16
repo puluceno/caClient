@@ -4,7 +4,6 @@
 
     angular.module('pulu.auth', []).factory('AuthService',
         function($q, $state, $localStorage, Http, UserService, $rootScope) {
-
             var prefix = 'logged';
             var events = { in: prefix + 'in',
                 out: prefix + 'out'
@@ -39,12 +38,12 @@
             };
 
             if (session.authenticated) {
-                Http.setAuthenticationToken(session.info.sessionId);
-                UserService.fetchUserInfo(session.info.sessionId).then(function() {
+                Http.setAuthenticationToken(session.info.token);
+                UserService.fetchUserInfo(session.info.token).then(function(response) {
                     // token still valid
                     broadcastLogin(events.in);
 
-                }, function() {
+                }, function(response) {
                     // token expired or logged out
                     revokeUser();
                 });
@@ -53,7 +52,7 @@
             var authenticationSucceeded = function(response) {
                 session.info = response;
                 session.authenticated = true;
-                Http.setAuthenticationToken(session.token);
+                Http.setAuthenticationToken(session.info.token);
                 broadcastLogin(events.in);
             };
 
@@ -83,7 +82,7 @@
                                 }
                             }
                         });
-                        posting.login = false;
+                    posting.login = false;
                     return process.promise;
                 },
                 /**
@@ -107,8 +106,12 @@
                     return posting.login;
                 },
 
-                getSession: function(){
-                  return session;
+                getSession: function() {
+                    return session;
+                },
+
+                getProfile: function(){
+                  return session.info.profile;
                 }
             };
             return service;

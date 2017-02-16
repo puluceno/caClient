@@ -2,7 +2,7 @@ app.controller("adminController", ['$scope', 'sha256', '$timeout', 'Http', funct
     var self = this;
 
     this.getProfiles = function() {
-        Http.get("profile")
+        Http.get("api/profile")
             .then(function successCallback(data) {
                     $scope.profiles = data;
                 },
@@ -16,7 +16,7 @@ app.controller("adminController", ['$scope', 'sha256', '$timeout', 'Http', funct
     };
 
     this.getUsers = function() {
-        Http.get("user")
+        Http.get("api/user")
             .then(function successCallback(data) {
                 $scope.users = data;
             }, function errorCallback(data) {
@@ -43,7 +43,7 @@ app.controller("adminController", ['$scope', 'sha256', '$timeout', 'Http', funct
         var fd = new FormData();
         $scope.newUser.password = sha256.convertToSHA256($scope.newUser.password);
         fd.append("data", angular.toJson($scope.newUser));
-        Http.postFormData("user", fd)
+        Http.postFormData("api/user", fd)
             .then(function successCallback(data) {
                 if (data == "USER_ALREADY_EXISTS") {
                     $scope.successMsg = "Usuário já existe!"
@@ -72,7 +72,7 @@ app.controller("adminController", ['$scope', 'sha256', '$timeout', 'Http', funct
         $scope.fetching = true;
         var fd = new FormData();
         fd.append("data", angular.toJson(updateUser));
-        Http.postFormData("user", fd)
+        Http.postFormData("api/user", fd)
             .then(function successCallback(data) {
                 if (data.data == "USER_ALREADY_EXISTS") {
                     $scope.successMsg = "Usuário já existe!"
@@ -97,7 +97,7 @@ app.controller("adminController", ['$scope', 'sha256', '$timeout', 'Http', funct
 
     this.delete = function(id) {
         $scope.fetching = true;
-        Http.deleteParam("user", id)
+        Http.deleteParam("api/user", id)
             .then(function successCallback(data) {
                 $scope.users = data;
                 $scope.success = true;

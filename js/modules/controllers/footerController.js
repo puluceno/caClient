@@ -2,7 +2,7 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
     var self = this;
 
     this.getParams = function() {
-        Http.get("params")
+        Http.get("api/params")
             .then(function successCallback(data) {
                 $scope.fileUrl = data.fileUrl;
                 $scope.lastUpdated = data.lastUpdated;
@@ -18,7 +18,7 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
     };
 
     this.getCount = function() {
-        Http.get("ca/count")
+        Http.get("api/ca/count")
             .then(function successCallback(data) {
                 $scope.caCount = data;
                 $scope.fetching = false;
@@ -37,7 +37,7 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
 
     this.updateFileUrl = function() {
         $scope.fileUrlUpdating = true;
-        Http.post("fileUrl", $scope.fileUrl)
+        Http.post("api/fileUrl", $scope.fileUrl)
             .then(function successCallback(data) {
                 $scope.fileUrl = data.fileUrl;
                 $scope.lastUpdated = data.lastUpdated;
@@ -59,7 +59,7 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
 
     this.updateDatabase = function() {
         $scope.databaseUpdating = true;
-        Http.post("updateDatabase")
+        Http.post("api/updateDatabase")
             .then(function successCallback(data) {
                 $scope.lastUpdated = data.lastUpdated;
                 $scope.success = true;
@@ -85,7 +85,7 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
             var file = $scope.newCA;
             var fd = new FormData();
             fd.append('newCA', file);
-            Http.postFormData("ca", fd)
+            Http.postFormData("api/ca", fd)
                 .then(function successCallback(data) {
                     $scope.successMsgFooter = data;
                     $scope.uploadingCA = false;
@@ -160,7 +160,7 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
             fd.append("file", file);
             fd.append("data", angular.toJson($scope.formCA));
 
-            Http.postFormData("caform", fd)
+            Http.postFormData("api/caform", fd)
                 .then(function successCallback(data) {
                     $scope.creatingFormCA = false;
                     $scope.success = true;
@@ -189,7 +189,7 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
             var fd = new FormData();
             fd.append("file", file);
 
-            Http.postFormData("caformfile", fd)
+            Http.postFormData("api/caformfile", fd)
                 .then(function successCallback(data) {
                     $scope.formCA = data;
                     if ($scope.formCA.attenuationTable == undefined) {
