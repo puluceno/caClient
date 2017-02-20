@@ -1,6 +1,84 @@
 <div ng-controller="analysisController as analysisCtrl">
     <div class="starter-template">
-        <h1>Análise de CAs</h1>
+        <h1 class="text-center">Análise de CAs</h1>
     </div>
-    <div class="container"></div>
+    <div class="container">
+        <form name="analysisCA">
+            <div ng-repeat="agent in agents" class="col-sm-12">
+                <div class="col-sm-1 text-right">
+                    <br/>
+                    <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addAgent()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Agente" popover-trigger="'mouseenter'"></i>
+                    <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeAgent($index)" style="cursor: pointer;" uib-popover="Remover Agente" popover-trigger="'mouseenter'"></i>
+                </div>
+                <div class="col-sm-2 filters">
+                    <p>Agente</p>
+                    <input type="text" name="agent" ng-model="agents[$index].agent" ng-required="true" class="form-control" placeholder="Ex: Ácido sulfúrico">
+                </div>
+                <div class="col-sm-3 filters">
+                    <p>Tipo de exposição</p>
+                    <div class="btn-group">
+                        <span class="control-label">Limitada</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="analysis.type=null" value="Limitada">
+                        <span class="control-label">Comum</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="analysis.type=null" value="Comum">
+                        <span class="control-label">Extendida</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="analysis.type=null" value="Extendida">
+                    </div>
+                </div>
+                <div class="col-sm-2">
+                    <p>Data Inicial</p>
+                    <p class="input-group">
+                        <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].startDate" is-open="openDPStart[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="analysisCtrl.openStart($event, $index)">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </span>
+                    </p>
+                </div>
+                <div class="col-sm-2">
+                    <p>Data Final</p>
+                    <p class="input-group">
+                        <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].endDate" is-open="openDPEnd[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="analysisCtrl.openEnd($event, $index)">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </span>
+                    </p>
+                </div>
+            </div>
+            <div class="col-sm-12">
+                <hr/>
+                <div ng-repeat="delivery in deliveries" class="col-sm-12">
+                    <div class="col-sm-1 text-right col-sm-offset-2">
+                        <br/>
+                        <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addDelivery()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Entrega" popover-trigger="'mouseenter'"></i>
+                        <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeDelivery($index)" style="cursor: pointer;" uib-popover="Remover Entrega" popover-trigger="'mouseenter'"></i>
+                    </div>
+                    <div class="col-sm-2 filters">
+                        <p>CA</p>
+                        <input type="text" name="caNumber" ng-model="delivery[$index].ca" ng-required="true" class="form-control" placeholder="Número do CA" maxlength="5" pattern="([1-9]?[0-9]?[0-9]?[0-9]?[0-9])">
+                    </div>
+                    <div class="col-sm-2">
+                        <p>Data de Entrega do EPI</p>
+                        <p class="input-group">
+                            <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="deliveries[$index].deliveryDate" is-open="openDPDelivery[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
+                            <span class="input-group-btn">
+                                <button type="button" class="btn btn-default" ng-click="analysisCtrl.openDelivery($event, $index)">
+                                    <i class="fa fa-calendar"></i>
+                                </button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-sm-2 filters">
+                        <p>Quantidade</p>
+                        <input type="number" name="quantity" ng-model="deliveries[$index].quantity" ng-required="true" class="form-control" placeholder="Quantidade" min="1">
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-sm-12">
+        <hr/>
+        <hr/>
+        <h3 class="text-center">Resultado</h3>
+    </div>
 </div>

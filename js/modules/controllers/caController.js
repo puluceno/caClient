@@ -1,6 +1,6 @@
 app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $timeout, Http) {
-    var downloadUrl = 'http://localhost:8000/';
-    // var downloadUrl = "http://52.67.252.0/CAs/";
+    // var downloadUrl = 'http://localhost:8000/';
+    var downloadUrl = "http://52.67.252.0/CAs/";
 
     this.initialize = function() {
         $scope.query = {};

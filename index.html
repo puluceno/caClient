@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html ng-app="caApp">
+<html ng-app="caApp" ng-controller="userController as userCtrl">
 
     <head>
         <title>Gerenciador de CAs</title>
@@ -20,7 +20,7 @@
     </head>
 
     <body class="ng-cloak">
-        <div ng-controller="userController as userCtrl">
+        <div >
             <section ng-if="!userCtrl.isAuthenticated()">
                 <form name="form.formLogin" class="form-signin" ng-submit="userCtrl.doLogin()" novalidate>
                     <h2 class="form-signin-heading">Por favor, identifique-se</h2>
@@ -52,16 +52,16 @@
                             <div class="collapse navbar-collapse" id="menuNavBar">
                                 <ul class="nav navbar-nav">
                                     <li ui-sref-active="active">
-                                        <a ui-sref="ca">Busca de CAs</a>
+                                        <a ui-sref="ca" data-toggle="collapse" data-target=".navbar-collapse.in">Busca de CAs</a>
                                     </li>
-                                    <li ui-sref-active="active">
-                                        <a ui-sref="analysis">Análise de CA</a>
+                                    <li ui-sref-active="active" ng-if="!userCtrl.isUser()">
+                                        <a ui-sref="analysis" data-toggle="collapse" data-target=".navbar-collapse.in">Análise de CA</a>
                                     </li>
-                                    <li ui-sref-active="active">
-                                        <a ui-sref="durability">Gerência de Durabilidade</a>
+                                    <li ui-sref-active="active" ng-if="!userCtrl.isUser()">
+                                        <a ui-sref="durability" data-toggle="collapse" data-target=".navbar-collapse.in">Gerência de Durabilidade</a>
                                     </li>
-                                    <li ui-sref-active="active" ng-if="userCtrl.isAdmin()">
-                                        <a ui-sref="admin">Admin</a>
+                                    <li ui-sref-active="active" ng-if="!userCtrl.isUser()">
+                                        <a ui-sref="admin" data-toggle="collapse" data-target=".navbar-collapse.in">Admin</a>
                                     </li>
                                 </ul>
                                 <ul class="nav navbar-nav navbar-right">
@@ -70,7 +70,7 @@
                                             <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu">
-                                            <li>
+                                            <li ng-if="!userCtrl.isManager()">
                                                 <a href="#" data-toggle="modal" data-target="#changePasswordModal">Alterar Senha</a>
                                             </li>
                                             <li>
@@ -126,6 +126,7 @@
         <script src="js/lib/ng-file-upload-all.min.js" type="text/javascript"></script>
         <script src="js/lib/sha256.js" type="text/javascript"></script>
         <script src="js/lib/ngStorage.min.0.3.6.js" type="text/javascript"></script>
+        <script src="js/lib/locale_pt-br.js" type="text/javascript"></script>
         <!-- Services -->
         <script src="js/modules/services/Http.js" type="text/javascript"></script>
         <script src="js/modules/services/Storage.js" type="text/javascript"></script>

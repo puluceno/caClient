@@ -53,7 +53,7 @@
                     {{user.login| limitTo:20}}{{user.login.length > 20 ? '...' : ''}}
                 </td>
                 <td ng-hide="editing">
-                    {{user.profile=='admin'?'Administrador':'Usuário'}}
+                    {{user.profile=='admin'?'Administrador':user.profile=='user'?'Usuário':'Gerente'}}
                 </td>
                 <td ng-hide="editing">
                     <button class="btn btn-primary center-block" title="Editar" ng-click="editing=true" ng-hide="editing">

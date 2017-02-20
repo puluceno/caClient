@@ -69,7 +69,15 @@ app.controller('userController', ['$scope', 'sha256', '$timeout', 'Http', 'AuthS
 
         this.isAdmin = function() {
             return AuthService.getProfile() === "admin";
-        }
+        };
+
+        this.isManager = function() {
+            return AuthService.getProfile() === "manager";
+        };
+
+        this.isUser = function() {
+            return AuthService.getProfile() === "user";
+        };
 
     }
 ]);

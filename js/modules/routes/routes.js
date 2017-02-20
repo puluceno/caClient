@@ -11,13 +11,27 @@ app.config(function($stateProvider, $urlRouterProvider) {
     var analysisState = {
         name: 'analysis',
         url: '/analysis',
-        templateUrl: '/html/analysis/index.html'
+        templateUrl: '/html/analysis/index.html',
+        resolve: {
+            security: ['AuthService', '$q', function(AuthService, $q) {
+                if (AuthService.isAuthenticated() &&  AuthService.getProfile() === "user") {
+                    return $q.reject("Not Authorized");
+                }
+            }]
+        }
     };
 
     var durabilityState = {
         name: 'durability',
         url: '/durability',
-        templateUrl: '/html/durability/index.html'
+        templateUrl: '/html/durability/index.html',
+        resolve: {
+            security: ['AuthService', '$q', function(AuthService, $q) {
+                if (AuthService.isAuthenticated() &&  AuthService.getProfile() === "user") {
+                    return $q.reject("Not Authorized");
+                }
+            }]
+        }
     };
 
     var adminState = {
@@ -26,22 +40,15 @@ app.config(function($stateProvider, $urlRouterProvider) {
         templateUrl: '/html/admin/index.html',
         resolve: {
             security: ['AuthService', '$q', function(AuthService, $q) {
-                if (AuthService.isAuthenticated() &&  AuthService.getProfile() != "admin") {
+                if (AuthService.isAuthenticated() &&  AuthService.getProfile() === "user") {
                     return $q.reject("Not Authorized");
                 }
             }]
         }
     };
 
-    var userState = {
-        name: 'users',
-        url: '/admin/users',
-        templateUrl: '/html/admin/users/index.html'
-    };
-
     $stateProvider.state(caState);
     $stateProvider.state(analysisState);
     $stateProvider.state(durabilityState);
     $stateProvider.state(adminState);
-    $stateProvider.state(userState);
 });

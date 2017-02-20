@@ -1,4 +1,4 @@
-app.controller("footerController", ['$scope', 'Http', '$timeout', function($scope, Http, $timeout) {
+app.controller("footerController", ['$scope', 'Http', '$timeout', '$uibModal', function($scope, Http, $timeout, $uibModal) {
     var self = this;
 
     this.getParams = function() {
@@ -148,6 +148,10 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
         $scope.createCAForm.$setPristine();
     };
 
+    this.getScope = function() {
+        return $scope;
+    };
+
     this.submitFormCA = function(file) {
         $scope.creatingFormCA = true;
         $scope.formCA.reports = [];
@@ -166,7 +170,9 @@ app.controller("footerController", ['$scope', 'Http', '$timeout', function($scop
                     $scope.success = true;
                     $scope.successMsgFooter = data;
                     self.getCount();
-                    // self.clearForm();
+                    if ($scope.successMsgFooter.includes("sucesso")) {
+                        self.clearForm();
+                    }
                     $timeout(function() {
                         $scope.success = false;
                     }, 15000);
