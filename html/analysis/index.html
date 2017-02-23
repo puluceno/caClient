@@ -3,7 +3,7 @@
         <h1 class="text-center">Análise de CAs</h1>
     </div>
     <div class="container">
-        <form name="analysisCA">
+        <form name="analysisCA" ng-submit="analysisCtrl.submitAnalysis()" novalidate>
             <div ng-repeat="agent in agents" class="col-sm-12">
                 <div class="col-sm-1 text-right">
                     <br/>
@@ -45,17 +45,22 @@
                     </p>
                 </div>
             </div>
+            <span ng-if="errorAgent" class="text-danger">{{errorMsgAgent}}</span>
             <div class="col-sm-12">
                 <hr/>
                 <div ng-repeat="delivery in deliveries" class="col-sm-12">
-                    <div class="col-sm-1 text-right col-sm-offset-2">
+                    <div class="col-sm-1 text-right">
                         <br/>
                         <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addDelivery()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Entrega" popover-trigger="'mouseenter'"></i>
                         <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeDelivery($index)" style="cursor: pointer;" uib-popover="Remover Entrega" popover-trigger="'mouseenter'"></i>
                     </div>
                     <div class="col-sm-2 filters">
+                        <p>Equipamento</p>
+                        <input type="text" name="equip" ng-model="deliveries[$index].equipment" ng-required="true" uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12" class="form-control" placeholder="Nome do Equipamento. Ex: Luva" typeahead-on-select="analysisCtrl.getRelatedCA($label)" typeahead-editable="false" />
+                    </div>
+                    <div class="col-sm-2 filters">
                         <p>CA</p>
-                        <input type="text" name="caNumber" ng-model="delivery[$index].ca" ng-required="true" class="form-control" placeholder="Número do CA" maxlength="5" pattern="([1-9]?[0-9]?[0-9]?[0-9]?[0-9])">
+                        <input type="text" name="caNumber" ng-model="deliveries[$index].ca" ng-required="true" class="form-control" placeholder="Número do CA" maxlength="5" pattern="([1-9]?[0-9]?[0-9]?[0-9]?[0-9])" uib-typeahead="ca.number for ca in cas | filter:$viewValue | limitTo:12">
                     </div>
                     <div class="col-sm-2">
                         <p>Data de Entrega do EPI</p>
@@ -68,17 +73,32 @@
                             </span>
                         </p>
                     </div>
-                    <div class="col-sm-2 filters">
+                    <div class="col-sm-1 filters">
                         <p>Quantidade</p>
-                        <input type="number" name="quantity" ng-model="deliveries[$index].quantity" ng-required="true" class="form-control" placeholder="Quantidade" min="1">
+                        <input type="number" name="quantity" ng-model="deliveries[$index].quantity" class="form-control" placeholder="Quantidade" min="1">
+                    </div>
+                    <div class="col-sm-2 filters">
+                        <p>Nome</p>
+                        <input type="text" name="name" ng-model="deliveries[$index].name" class="form-control" placeholder="Nome da Análise" uib-popover="Digite um nome para salvar esta análise. Futuramente será possível resgatá-la." popover-trigger="'mouseenter'">
                     </div>
                 </div>
+                <div ng-show="fetching" class="text-center">
+                    <i class="fa fa-spinner fa-spin fa-3x"></i>
+                </div>
+                <span ng-if="success" class="text-success">{{successMsg2}}</span>
+                <span ng-if="error" class="text-danger">{{errorMsg2}}</span>
+                <button class="btn btn-primary center-block" style="margin-top:10px;" ng-disabled="analysing || analysisCA.$invalid || fetching">Analisar &raquo;</button>
             </div>
         </form>
     </div>
     <div class="col-sm-12">
         <hr/>
         <hr/>
-        <h3 class="text-center">Resultado</h3>
+        <span ng-if="success" class="text-success h3">{{successMsg}}</span>
+        <span ng-if="error" class="text-danger h3">{{errorMsg}}</span>
+        <div ng-if="!analysing">
+            <h3 class="text-center">Resultado</h3>
+            <canvas id="line" height="25" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride"></canvas>
+        </div>
     </div>
 </div>

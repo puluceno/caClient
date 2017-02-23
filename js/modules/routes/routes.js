@@ -1,7 +1,5 @@
 app.config(function($stateProvider, $urlRouterProvider) {
 
-    $urlRouterProvider.otherwise('ca');
-
     var caState = {
         name: 'ca',
         url: '/ca',
@@ -14,7 +12,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
         templateUrl: '/html/analysis/index.html',
         resolve: {
             security: ['AuthService', '$q', function(AuthService, $q) {
-                if (AuthService.isAuthenticated() &&  AuthService.getProfile() === "user") {
+                if (AuthService.isAuthenticated() && AuthService.getProfile() === "user") {
                     return $q.reject("Not Authorized");
                 }
             }]
@@ -27,7 +25,7 @@ app.config(function($stateProvider, $urlRouterProvider) {
         templateUrl: '/html/durability/index.html',
         resolve: {
             security: ['AuthService', '$q', function(AuthService, $q) {
-                if (AuthService.isAuthenticated() &&  AuthService.getProfile() === "user") {
+                if (AuthService.isAuthenticated() && AuthService.getProfile() === "user") {
                     return $q.reject("Not Authorized");
                 }
             }]
@@ -40,13 +38,14 @@ app.config(function($stateProvider, $urlRouterProvider) {
         templateUrl: '/html/admin/index.html',
         resolve: {
             security: ['AuthService', '$q', function(AuthService, $q) {
-                if (AuthService.isAuthenticated() &&  AuthService.getProfile() === "user") {
+                if (AuthService.isAuthenticated() && AuthService.getProfile() === "user") {
                     return $q.reject("Not Authorized");
                 }
             }]
         }
     };
-
+    $urlRouterProvider.otherwise('ca');
+    
     $stateProvider.state(caState);
     $stateProvider.state(analysisState);
     $stateProvider.state(durabilityState);

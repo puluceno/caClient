@@ -1,5 +1,5 @@
     var app = angular.module("caApp", ['ui.router', 'ngStorage', 'ngTagsInput', 'ui.bootstrap', 'ngFileUpload',
-            'angular-encryption', 'pulu.network', 'pulu.storage', 'pulu.user', 'pulu.auth'
+            'angular-encryption', 'pulu.network', 'pulu.storage', 'pulu.user', 'pulu.auth','chart.js'
         ])
         .config(function($sceDelegateProvider) {
             $sceDelegateProvider.resourceUrlWhitelist([

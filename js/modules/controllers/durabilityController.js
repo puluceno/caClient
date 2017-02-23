@@ -1,6 +1,6 @@
 app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', function($scope, Http, Upload, $timeout) {
-    // var downloadUrl = "http://52.67.252.0/files/";
-    var downloadUrl = "http://localhost:8000/";
+    var downloadUrl = "http://52.67.252.0/files/";
+    // var downloadUrl = "http://localhost:8000/";
     var self = this;
 
     this.getDurabilities = function() {
@@ -69,7 +69,7 @@ app.controller("durabilityController", ['$scope', 'Http', 'Upload', '$timeout', 
                     $scope.success = false;
                 }, 15000);
             }, function errorCallback(data) {
-                $scope.insertError = true;
+                $scope.error = true;
                 $scope.errorMsg = "Falha ao comunicar com o servidor."
                 $scope.fetching = false;
                 $timeout(function() {

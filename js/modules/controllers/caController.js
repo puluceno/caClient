@@ -1,4 +1,4 @@
-app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $timeout, Http) {
+app.controller("caController", ['$scope', '$timeout', 'Http', function($scope, $timeout, Http) {
     // var downloadUrl = 'http://localhost:8000/';
     var downloadUrl = "http://52.67.252.0/CAs/";
 
@@ -11,8 +11,6 @@ app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $t
         $scope.index = 0;
     };
 
-    this.initialize();
-
     this.submitForm = function() {
         $scope.fetching = true;
 
@@ -20,12 +18,14 @@ app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $t
             $scope.query.equipment = $scope.query.equipment.toUpperCase();
         if ($scope.query.company != null)
             $scope.query.company = $scope.query.company.toUpperCase();
-        if ($scope.query.status.valid) {
-            $scope.query.status = "VÁLIDO";
-        } else if ($scope.query.status.invalid) {
-            $scope.query.status = "VENCIDO";
-        } else if (($scope.query.status.invalid && $scope.query.status.valid) || (!$scope.query.status.invalid && !$scope.query.status.valid)) {
-            $scope.query.status = null;
+        if ($scope.query.status != null) {
+            if ($scope.query.status.valid) {
+                $scope.query.status = "VÁLIDO";
+            } else if ($scope.query.status.invalid) {
+                $scope.query.status = "VENCIDO";
+            } else if (($scope.query.status.invalid && $scope.query.status.valid) || (!$scope.query.status.invalid && !$scope.query.status.valid)) {
+                $scope.query.status = null;
+            }
         }
 
         Http.get("api/ca", $scope.query)
@@ -40,11 +40,10 @@ app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $t
                 $scope.errorMsg = "Falha ao comunicar com o servidor."
                 $timeout(function() {
                     $scope.error = false;
-                }, 20000);
+                }, 10000);
             });
-
-        $scope.searchForm.$setPristine();
         this.initialize();
+        $scope.searchForm.$setPristine();
     };
 
     this.getPdf = function(fileName) {
@@ -67,4 +66,32 @@ app.controller("caController", ['$scope','$timeout', 'Http', function($scope, $t
         }
     };
 
+    this.delete = function(ca) {
+        $scope.fetching = true;
+
+        Http.deleteParam("api/ca", ca._id.$oid)
+            .then(function successCallback() {
+                $scope.success = true;
+                $scope.successMsg = "CA " + ca.number + " removido!"
+                $scope.query = {
+                    number: ca.number,
+                    exactSearch: true
+                }
+                self.submitForm();
+                $scope.fetching = false;
+                $timeout(function() {
+                    $scope.success = false;
+                }, 10000);
+            }, function errorCallback(data) {
+                $scope.error = true;
+                $scope.errorMsg = "Falha ao comunicar com o servidor."
+                $scope.fetching = false;
+                $timeout(function() {
+                    $scope.error = false;
+                }, 10000);
+            });
+        $scope.searchForm.$setPristine();
+    };
+
+    var self = this;
 }]);

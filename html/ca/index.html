@@ -40,6 +40,7 @@
         </form>
     </div>
     <span class="b text-danger h3" ng-show="error">{{errorMsg}}</span>
+    <span class="b text-success h3" ng-show="success">{{successMsg}}</span>
     <hr/>
     <div class="table-responsive" style="padding-bottom: 20px;">
         <table class="table table-striped">
@@ -61,12 +62,16 @@
                 </th>
             </thead>
             <tr ng-repeat="ca in cas | orderBy:orderCriteria:orderDirection" ng-hide="fetching">
-
                 <td>
-                    <i class="fa fa-exclamation-triangle" aria-hidden="true" ng-show="caCtrl.diffCheck(ca)"></i>
+                    <span ng-if="caCtrl.diffCheck(ca)">
+                        <button class="btn btn-primary btn-xs" ng-if="userCtrl.isAdmin()" title="Remover" ng-click="caCtrl.delete(ca)">
+                            <i class="fa fa-trash-o fa-2x" aria-hidden="true"></i>
+                        </button>
+                        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+                    </span>
                     {{::ca.number}}</td>
                 <td>{{::ca.date | limitTo:12}}</td>
-                <td class="text-capitalize">{{::ca.status | lowercase}}</td>
+                <td class="text-capitalize" title={{ca.status}}>{{::ca.status | lowercase | limitTo:13}}{{ca.status.length>13?'...':''}}</td>
                 <td class="text-capitalize" title={{ca.equipment}}>{{::ca.equipment | lowercase | limitTo:30}}{{ca.equipment.length > 30 ? '...' : ''}}</td>
                 <td title={{ca.description}}>{{::ca.description | limitTo:35}}{{::ca.description.length > 30 ? '...' : ''}}</td>
                 <td>
