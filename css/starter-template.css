@@ -148,3 +148,7 @@ td {
 .modal-backdrop {
     z-index: 999 !important;
 }
+
+.uib-time, .uib-separator {
+  padding: 0px !important;
+}

@@ -1,13 +1,14 @@
 app.controller("analysisController", ['$scope', '$timeout', 'Http', function($scope, $timeout, Http) {
 
+    var self = this;
     $scope.agents = [{}];
     $scope.deliveries = [{}];
 
-    this.addAgent = function() {
+    this.addAgents = function() {
         $scope.agents.push({});
     };
 
-    this.removeAgent = function(index) {
+    this.removeAgents = function(index) {
         if ($scope.agents.length > 1)
             $scope.agents.splice(index, 1);
     };
@@ -28,6 +29,8 @@ app.controller("analysisController", ['$scope', '$timeout', 'Http', function($sc
 
     $scope.openDPStart = [];
     $scope.openDPEnd = [];
+    $scope.openDPVacationStart = [];
+    $scope.openDPVacationEnd = [];
     $scope.openDPDelivery = [];
 
     this.openStart = function($event, datePickerIndex) {
@@ -52,6 +55,28 @@ app.controller("analysisController", ['$scope', '$timeout', 'Http', function($sc
         }
     };
 
+    this.openVacationStart = function($event, datePickerIndex) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        if ($scope.openDPVacationStart[datePickerIndex] === true) {
+            $scope.openDPVacationStart.length = 0;
+        } else {
+            $scope.openDPVacationStart.length = 0;
+            $scope.openDPVacationStart[datePickerIndex] = true;
+        }
+    };
+
+    this.openVacationEnd = function($event, datePickerIndex) {
+        $event.preventDefault();
+        $event.stopPropagation();
+        if ($scope.openDPVacationEnd[datePickerIndex] === true) {
+            $scope.openDPVacationEnd.length = 0;
+        } else {
+            $scope.openDPVacationEnd.length = 0;
+            $scope.openDPVacationEnd[datePickerIndex] = true;
+        }
+    };
+
     this.openDelivery = function($event, datePickerIndex) {
         $event.preventDefault();
         $event.stopPropagation();
@@ -63,12 +88,75 @@ app.controller("analysisController", ['$scope', '$timeout', 'Http', function($sc
         }
     };
 
+    this.getAgent = function() {
+        Http.get("api/agent")
+            .then(function successCallback(data) {
+                $scope.agent = data;
+            }, function errorCallback(data) {
+                $scope.errorAgent = true;
+                $scope.errorMsgAgent = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.errorAgent = false;
+                }, 10000);
+            })
+    };
+
+    $scope.addAgent = function(tag) {
+        Http.post("api/agent", tag)
+            .then(function successCallback(data) {
+                if (data != null && data != "") {
+                    $scope.agent = data;
+                }
+            }, function errorCallback(data) {
+                $scope.errorAgent = true;
+                $scope.errorMsgAgent = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.errorAgent = false;
+                }, 10000);
+            })
+    }
+
+    $scope.loadAgent = function($query) {
+        var agent = $scope.agent;
+        return agent.filter(function(agent) {
+            return agent.text.indexOf($query.toLowerCase()) != -1;
+        });
+    };
+
+    this.agentContains = function(index, word, word2) {
+        if ($scope.agents[index].agent != undefined)
+            return $scope.agents[index].agent.some(item => JSON.stringify(item) === JSON.stringify({
+                'text': word
+            })) || $scope.agents[index].agent.some(item => JSON.stringify(item) === JSON.stringify({
+                'text': word2
+            }));
+    };
+
+    this.getWorkingHours = function() {
+        Http.get("api/workingHours")
+            .then(function successCallback(data) {
+                $scope.wHours = data;
+            }, function errorCallback(data) {
+                $scope.errorAgent = true;
+                $scope.errorMsgAgent = "Falha ao comunicar com o servidor."
+                $timeout(function() {
+                    $scope.errorAgent = false;
+                }, 10000);
+            })
+    };
+
+    this.clearVacations = function(index) {
+        if (!$scope.showVacations) {
+            $scope.agents[index].beginVacation = $scope.agents[index].endVacation = null;
+        }
+    }
+
     this.getEquipments = function() {
         Http.get("api/equipment")
             .then(function successCallback(data) {
                 $scope.equipments = data;
             }, function errorCallback(data) {
-                $scope.error = true;
+                $scope.errorAgent = true;
                 $scope.errorMsg = "Falha ao comunicar com o servidor."
                 $timeout(function() {
                     $scope.error = false;
@@ -76,7 +164,8 @@ app.controller("analysisController", ['$scope', '$timeout', 'Http', function($sc
             })
     };
 
-    this.getRelatedCA = function(equipment) {
+    this.getRelatedCA = function($index) {
+        equipment = $scope.deliveries[$index].equipment
         $scope.fetching = true;
         Http.get("api/ca", {
                 "equipment": equipment
@@ -85,43 +174,50 @@ app.controller("analysisController", ['$scope', '$timeout', 'Http', function($sc
                 data.splice(-1, 1);
                 $scope.cas = data;
                 $scope.fetching = false;
-                $scope.success = true;
-                $scope.successMsg2 = "Há " + data.length + " CA para " + equipment + "."
+                $scope.success2 = true;
+                $scope.successEquipment = "Há " + data.length + " CA para " + equipment + "."
                 $timeout(function() {
-                    $scope.success = false;
-                }, 6000);
+                    $scope.success2 = false;
+                }, 8000);
             }, function errorCallback(data) {
-                $scope.errorMsg2 = "Falha ao comunicar com o servidor."
+                $scope.errorMsgEquipment = "Falha ao comunicar com o servidor."
                 $scope.fetching = false;
-                $scope.error = true;
+                $scope.errorEquipment = true;
                 $timeout(function() {
-                    $scope.error = false;
-                }, 6000);
+                    $scope.errorEquipment = false;
+                }, 8000);
             });
     };
 
     this.submitAnalysis = function() {
         $scope.analysing = true;
         if (this.isAnalysisFormValid()) {
-            var fd = new FormData();
-            fd.append("agents", angular.toJson($scope.agents));
-            fd.append("deliveries", angular.toJson($scope.deliveries));
-            Http.postFormData("api/analysis", fd)
-                .then(function successCallback(data) {
-                    $scope.analysing = false;
-                    $scope.analysis = data;
-                }, function errorCallback(data) {
-                    if (data.data === 'CA_EXPIRED_WHEN_DELIVERED')
-                        $scope.errorMsg = "O CA estava expirado quando o EPI foi entregue.";
-                    $scope.analysing = false;
-                    $scope.error = true;
-                    $timeout(function() {
-                        $scope.error = false;
-                    }, 8000);
-                });
+            // this.verifyDates
+            console.log(this.processDate($scope.cas[0].date));
+            // var fd = new FormData();
+            // fd.append("agents", angular.toJson($scope.agents));
+            // fd.append("deliveries", angular.toJson($scope.deliveries));
+            // Http.postFormData("api/analysis", fd)
+            //     .then(function successCallback(data) {
+            //         $scope.analysing = false;
+            //         $scope.analysis = data;
+            //     }, function errorCallback(data) {
+            //         if (data.data === 'CA_EXPIRED_WHEN_DELIVERED')
+            //             $scope.errorMsg = "O CA estava expirado quando o EPI foi entregue.";
+            //         $scope.analysing = false;
+            //         $scope.error = true;
+            //         $timeout(function() {
+            //             $scope.error = false;
+            //         }, 8000);
+            //     });
         }
         $scope.analysing = false;
     };
+
+    this.processDate = function(date) {
+        var parts = date.split("/");
+        return new Date(parts[2], parts[1] - 1, parts[0]);
+    }
 
     this.isAnalysisFormValid = function() {
         for (var i = 0; i < $scope.agents.length; i++) {
@@ -130,11 +226,23 @@ app.controller("analysisController", ['$scope', '$timeout', 'Http', function($sc
                 $scope.errorAgent = true;
                 $timeout(function() {
                     $scope.errorAgent = false;
-                }, 7000);
+                }, 10000);
                 return false;
             }
         };
         return true;
+    };
+
+    this.checkSelectCA = function(item, $index) {
+        console.log("Item: " + item);
+        $scope.cas.push(item);
+        if (item.equipment != $scope.deliveries[$index].equipment) {
+            $scope.errorMsgEquipment = "CA " + item.number + " possui equipamento diferente do informado. CA: " + item.equipment + ". Informado: " + $scope.deliveries[$index].equipment;
+            $scope.errorEquipment = true;
+            $timeout(function() {
+                $scope.errorEquipment = false;
+            }, 10000);
+        }
     };
 
 
@@ -174,6 +282,14 @@ app.controller("analysisController", ['$scope', '$timeout', 'Http', function($sc
         }
     };
 
+    this.getAgent();
+    this.getWorkingHours();
     this.getEquipments();
 
 }]);
+
+app.filter('minutesToDateTime', [function() {
+    return function(minutes) {
+        return new Date(1970, 0, 1).setMinutes(minutes);
+    };
+}])

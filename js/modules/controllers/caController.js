@@ -14,17 +14,19 @@ app.controller("caController", ['$scope', '$timeout', 'Http', function($scope, $
     this.submitForm = function() {
         $scope.fetching = true;
 
-        if ($scope.query.equipment != null)
-            $scope.query.equipment = $scope.query.equipment.toUpperCase();
-        if ($scope.query.company != null)
-            $scope.query.company = $scope.query.company.toUpperCase();
-        if ($scope.query.status != null) {
-            if ($scope.query.status.valid) {
-                $scope.query.status = "VÁLIDO";
-            } else if ($scope.query.status.invalid) {
-                $scope.query.status = "VENCIDO";
-            } else if (($scope.query.status.invalid && $scope.query.status.valid) || (!$scope.query.status.invalid && !$scope.query.status.valid)) {
-                $scope.query.status = null;
+        if ($scope.query != null) {
+            if ($scope.query.equipment != null)
+                $scope.query.equipment = $scope.query.equipment.toUpperCase();
+            if ($scope.query.company != null)
+                $scope.query.company = $scope.query.company.toUpperCase();
+            if ($scope.query.status != null) {
+                if ($scope.query.status.valid) {
+                    $scope.query.status = "VÁLIDO";
+                } else if ($scope.query.status.invalid) {
+                    $scope.query.status = "VENCIDO";
+                } else if (($scope.query.status.invalid && $scope.query.status.valid) || (!$scope.query.status.invalid && !$scope.query.status.valid)) {
+                    $scope.query.status = null;
+                }
             }
         }
 
@@ -81,14 +83,14 @@ app.controller("caController", ['$scope', '$timeout', 'Http', function($scope, $
                 $scope.fetching = false;
                 $timeout(function() {
                     $scope.success = false;
-                }, 10000);
+                }, 15000);
             }, function errorCallback(data) {
                 $scope.error = true;
                 $scope.errorMsg = "Falha ao comunicar com o servidor."
                 $scope.fetching = false;
                 $timeout(function() {
                     $scope.error = false;
-                }, 10000);
+                }, 15000);
             });
         $scope.searchForm.$setPristine();
     };

@@ -2,14 +2,14 @@
     <div class="container-fluid">
         <span ng-show="success" class="text-success h3">{{successMsgFooter}}</span>
         <span ng-show="error" class="text-danger h3">{{errorMsgFooter}}</span>
-        <form name="formFileUrl" class="form-inline small text-center hidden-xs" ng-submit="footerCtrl.updateFileUrl()" novalidate>
+        <form ng-if="!userCtrl.isUser()" name="formFileUrl" class="form-inline small text-center hidden-xs" ng-submit="footerCtrl.updateFileUrl()" novalidate>
             <span>Arquivo de atualização:
             </span>
             <input ng-model="fileUrl" class="form-control fileUrlInput" type="text"/>
             <button class="btn btn-primary btn-sm" type="submit" ng-disabled="fileUrlUpdating">Atualizar&raquo;</button>
             <i class="fa fa-spinner fa-spin fa" ng-show="fileUrlUpdating"></i>
         </form>
-        <div class="text-center text-muted small hidden-xs">
+        <div ng-if="!userCtrl.isUser()" class="text-center text-muted small hidden-xs">
             <div class="fileUpload btn btn-primary btn-sm" ng-hide="uploadingCA">
                 <i class="fa fa-upload" aria-hidden="true"></i>
                 <span>Adicionar um CA através de arquivo</span>
@@ -29,7 +29,7 @@
             <span>
                 Dados atualizados em:
             </span>{{lastUpdated}}
-            <button class="btn btn-primary btn-xs hidden-xs" type="button" ng-disabled="databaseUpdating" ng-click="footerCtrl.updateDatabase()" ng-disabled="databaseUpdating">Atualizar agora!&raquo;</button>
+            <button ng-if="!userCtrl.isUser()" class="btn btn-primary btn-xs hidden-xs" type="button" ng-disabled="databaseUpdating" ng-click="footerCtrl.updateDatabase()" ng-disabled="databaseUpdating">Atualizar agora!&raquo;</button>
             <i class="fa fa-spinner fa-spin fa" ng-show="databaseUpdating"></i>
         </div>
     </div>
