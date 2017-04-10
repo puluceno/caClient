@@ -5,8 +5,8 @@
     angular.module('pulu.network', []).factory('Http',
         function($log, $q, $http, $timeout) {
 
-            var apiPath = 'http://localhost:4567/';
-            // var apiPath = "http://52.67.252.0:4567/";
+            // var apiPath = 'http://localhost:4567/';
+            var apiPath = "http://52.67.252.0:4567/";
 
             return {
 
