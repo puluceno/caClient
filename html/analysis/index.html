@@ -1,164 +1,167 @@
 <div ng-controller="analysisController as analysisCtrl">
-    <div class="starter-template">
-        <h1 class="text-center">Análise de CAs</h1>
-    </div>
-    <div class="container">
-        <form name="analysisCA" ng-submit="analysisCtrl.submitAnalysis()" novalidate>
-            <div ng-repeat="agent in agents" class="col-sm-12">
-                <div class="col-sm-1 text-right">
-                    <br/>
-                    <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addAgents()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Agente" popover-trigger="'mouseenter'"></i>
-                    <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeAgents($index)" style="cursor: pointer;" uib-popover="Remover Agente" popover-trigger="'mouseenter'"></i>
-                </div>
-                <div class="col-sm-2 filters">
-                    <p>Agente</p>
-                    <tags-input class="bootstrap" name="agent" ng-model="agents[$index].agent" placeholder="Ex: Ácido sulfúrico." replace-spaces-with-dashes="false" minLength="1" ng-required="true" on-tag-added="addAgent($tag)">
-                        <auto-complete source="loadAgent($query)" min-length="1" max-results-to-show="10"></auto-complete>
-                    </tags-input>
-                </div>
-                <div class="col-sm-1 filters" ng-if="analysisCtrl.agentContains($index,'ruido','ruído')">
-                    <p>Ruído(dB)</p>
-                    <input type="number" class="form-control" ng-model="agents[$index].db" min="85" max="115"/>
-                    <p>Tempo de exposição</p>
-                    <div uib-timepicker ng-model="agents[$index].dbTime" hour-step="1" minute-step="1" show-meridian="false" show-spinners="false"></div>
-                </div>
-                <div class="col-sm-1 filters">
-                    <p>Tipo de exposição</p>
-                    <div class="btn-group">
-                        <span class="control-label">Limitada</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="agents[$index].type=null" value="Limitada"><br/>
-                        <span class="control-label">Comum</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="agents[$index].type=null" value="Comum"><br/>
-                        <span class="control-label">Extendida</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="agents[$index].type=null" value="Extendida">
-                    </div>
-                </div>
-                <div class="col-sm-2">
-                    <p>Data Inicial</p>
-                    <p class="input-group">
-                        <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].startDate" is-open="openDPStart[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
-                        <span class="input-group-btn">
+  <div class="starter-template">
+    <h1 class="text-center">Análise de CAs</h1>
+  </div>
+
+  <div class="container">
+
+    <form name="analysisCA" ng-submit="analysisCtrl.submitAnalysis()" novalidate>
+
+      <div class="col-sm-12">
+        <div ng-repeat="agent in agents" class="col-sm-12">
+          <div class="col-sm-1 text-right">
+            <br/>
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addAgents()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Agente" popover-trigger="'mouseenter'"></i>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeAgents($index)" style="cursor: pointer;" uib-popover="Remover Agente" popover-trigger="'mouseenter'"></i>
+          </div>
+          <div class="col-sm-3 filters">
+            <p>Agente</p>
+            <tags-input class="bootstrap" name="agent" ng-model="agents[$index].agent" placeholder="Ex: Ácido sulfúrico." replace-spaces-with-dashes="false" minLength="1" ng-required="true" on-tag-added="addAgent($tag)">
+              <auto-complete source="loadAgent($query)" min-length="1" max-results-to-show="10"></auto-complete>
+            </tags-input>
+          </div>
+          <div class="col-sm-2 filters" ng-if="analysisCtrl.agentContains($index,'ruido','ruído')">
+            <p>Ruído(dB)</p>
+            <input type="number" class="form-control" ng-model="agents[$index].db" min="85" max="115" />
+            <p>Tempo de exposição</p>
+            <div uib-timepicker class="center" ng-model="agents[$index].dbTime" hour-step="1" minute-step="1" show-meridian="false" show-spinners="false"></div>
+          </div>
+          <div class="col-sm-2 filters">
+            <p>Tipo de exposição</p>
+            <div class="btn-group">
+              <span class="control-label">Limitada</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="agents[$index].type=null" value="Limitada"><br/>
+              <span class="control-label">Comum</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="agents[$index].type=null" value="Comum"><br/>
+              <span class="control-label">Extendida</span><input type="radio" ng-model="agents[$index].type" ng-dblclick="agents[$index].type=null" value="Extendida">
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <p>Data Inicial</p>
+            <p class="input-group">
+              <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].startDate" is-open="openDPStart[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" />
+              <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="analysisCtrl.openStart($event, $index)">
                                 <i class="fa fa-calendar"></i>
                             </button>
                         </span>
-                    </p>
-                    <p>Data Final</p>
-                    <p class="input-group">
-                        <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].endDate" is-open="openDPEnd[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
-                        <span class="input-group-btn">
+            </p>
+            <p>Data Final</p>
+            <p class="input-group">
+              <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].endDate" is-open="openDPEnd[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" />
+              <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="analysisCtrl.openEnd($event, $index)">
                                 <i class="fa fa-calendar"></i>
                             </button>
                         </span>
-                    </p>
-                </div>
-                <div class="col-sm-2">
-                    <p>Jornada de Trabalho</p>
-                    <select ng-model="agents[$index].wHours" ng-options="wHour.type for wHour in wHours" ng-required="true" class="form-control"></select>
-                    <span class="small">{{agents[$index].wHours.description}}</span>
-                </div>
-                <div class="col-sm-1 text-center">
-                    <p>Afastamento</p>
-                    <input type="checkbox" ng-model="showVacations" uib-popover="Houve afastamento?" popover-trigger="'mouseenter'" ng-click="analysisCtrl.clearVacations($index)"/>
-                </div>
-                <div class="col-sm-2" ng-if="showVacations">
-                    <p>Afastamento</p>
-                    <p class="input-group">
-                        <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].beginVacation" is-open="openDPVacationStart[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="analysisCtrl.openVacationStart($event, $index)">
-                                <i class="fa fa-calendar"></i>
-                            </button>
-                        </span>
-                    </p>
-                    <p>Retorno</p>
-                    <p class="input-group">
-                        <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="agents[$index].endVacation" is-open="openDPVacationEnd[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
-                        <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="analysisCtrl.openVacationEnd($event, $index)">
-                                <i class="fa fa-calendar"></i>
-                            </button>
-                        </span>
-                    </p>
-                </div>
-            </div>
-            <span ng-if="errorAgent" class="text-danger">{{errorMsgAgent}}</span>
+            </p>
+          </div>
+        </div>
+        <span ng-if="errorAgent" class="text-danger">{{errorMsgAgent}}</span>
+        <br/>
+        <span ng-if="successAgent" class="text-success">{{successMsgAgent}}</span>
+      </div>
+
+      <div class="col-sm-12">
+        <hr/>
+        <div ng-repeat="labor in labors" class="col-sm-12">
+          <div class="col-sm-1 text-right">
             <br/>
-            <span ng-if="successAgent" class="text-success">{{successMsgAgent}}</span>
-            <div class="col-sm-12">
-                <hr/>
-                <div ng-repeat="delivery in deliveries" class="col-sm-12">
-                    <div class="col-sm-1 text-right">
-                        <br/>
-                        <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addDelivery()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Entrega" popover-trigger="'mouseenter'"></i>
-                        <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeDelivery($index)" style="cursor: pointer;" uib-popover="Remover Entrega" popover-trigger="'mouseenter'"></i>
-                    </div>
-                    <div class="col-sm-2 filters">
-                        <p>Equipamento</p>
-                        <input
-                            type="text"
-                            name="equip"
-                            ng-model="deliveries[$index].equipment"
-                            ng-required="true"
-                            uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12"
-                            class="form-control"
-                            placeholder="Nome do Equipamento. Ex: Luva"
-                            ng-blur="analysisCtrl.getRelatedCA($index)"
-                            typeahead-editable="true"
-                            typeahead-min-length="4"/>
-                    </div>
-                    <div class="col-sm-2 filters">
-                        <p>CA</p>
-                        <input
-                            type="text"
-                            name="caNumber"
-                            ng-model="deliveries[$index].ca"
-                            ng-required="true"
-                            class="form-control"
-                            placeholder="Número do CA"
-                            maxlength="5"
-                            pattern="([1-9]?[0-9]?[0-9]?[0-9]?[0-9])"
-                            uib-typeahead="ca.number for ca in cas | filter:$viewValue | limitTo:12"
-                            typeahead-on-select="analysisCtrl.checkSelectCA($item, $index)"
-                            typeahead-editable="false">
-                    </div>
-                    <div class="col-sm-2">
-                        <p>Data de Entrega do EPI</p>
-                        <p class="input-group">
-                            <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="deliveries[$index].deliveryDate" is-open="openDPDelivery[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false"/>
-                            <span class="input-group-btn">
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addLabor()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Afastamento" popover-trigger="'mouseenter'"></i>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeLabor($index)" style="cursor: pointer;" uib-popover="Remover Afastamento" popover-trigger="'mouseenter'"></i>
+          </div>
+          <div class="col-sm-3">
+            <p>Jornada de Trabalho</p>
+            <select ng-model="labors[$index].wHours" ng-options="wHour.type for wHour in wHours" ng-required="true" class="form-control"></select>
+            <span class="small">{{labor.wHours.description}}</span>
+          </div>
+          <div class="col-sm-3 text-center">
+            <p>Afastamento</p>
+            <input type="checkbox" ng-model="showVacations" uib-popover="Houve afastamento?" popover-trigger="'mouseenter'" ng-click="analysisCtrl.clearVacations($index)" />
+          </div>
+          <div class="col-sm-3" ng-if="showVacations">
+            <p>Afastamento</p>
+            <p class="input-group">
+              <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="labor.beginVacation" is-open="openDPVacationStart[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" />
+              <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="analysisCtrl.openVacationStart($event, $index)">
+                              <i class="fa fa-calendar"></i>
+                          </button>
+                      </span>
+            </p>
+            <p>Retorno</p>
+            <p class="input-group">
+              <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="labor.endVacation" is-open="openDPVacationEnd[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" />
+              <span class="input-group-btn">
+                          <button type="button" class="btn btn-default" ng-click="analysisCtrl.openVacationEnd($event, $index)">
+                              <i class="fa fa-calendar"></i>
+                          </button>
+                      </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-12">
+        <hr/>
+        <div ng-repeat="delivery in deliveries" class="col-sm-12">
+          <div class="col-sm-1 text-right">
+            <br/>
+            <i class="fa fa-plus-circle" aria-hidden="true" ng-click="analysisCtrl.addDelivery()" style="cursor: pointer; margin-top:15px;" uib-popover="Adicionar Entrega" popover-trigger="'mouseenter'"></i>
+            <i class="fa fa-minus-circle" aria-hidden="true" ng-click="analysisCtrl.removeDelivery($index)" style="cursor: pointer;" uib-popover="Remover Entrega" popover-trigger="'mouseenter'"></i>
+          </div>
+          <div class="col-sm-4 filters">
+            <p>Equipamento</p>
+            <input type="text" name="equip" ng-model="deliveries[$index].equipment" ng-required="true" uib-typeahead="equipment._id for equipment in equipments | filter:$viewValue | limitTo:12" class="form-control" placeholder="Nome do Equipamento. Ex: Luva" ng-blur="analysisCtrl.getRelatedCA($index)"
+              typeahead-editable="true" typeahead-min-length="4" />
+          </div>
+          <div class="col-sm-2 filters">
+            <p>CA</p>
+            <input type="text" name="caNumber" ng-model="deliveries[$index].ca" ng-required="true" class="form-control" placeholder="Número do CA" maxlength="5" pattern="([1-9]?[0-9]?[0-9]?[0-9]?[0-9])" uib-typeahead="ca.number for ca in cas | filter:$viewValue | limitTo:12"
+              typeahead-on-select="analysisCtrl.checkSelectCA($item, $index)" typeahead-editable="false">
+          </div>
+          <div class="col-sm-2">
+            <p>Data de Entrega do EPI</p>
+            <p class="input-group">
+              <input type="text" class="form-control" uib-datepicker-popup="{{dateOptions.format}}" ng-model="deliveries[$index].deliveryDate" is-open="openDPDelivery[$index]" datepicker-options="dateOptions" ng-required="true" show-button-bar="false" />
+              <span class="input-group-btn">
                                 <button type="button" class="btn btn-default" ng-click="analysisCtrl.openDelivery($event, $index)">
                                     <i class="fa fa-calendar"></i>
                                 </button>
                             </span>
-                        </p>
-                    </div>
-                    <div class="col-sm-1 filters">
-                        <p>Quantidade</p>
-                        <input type="number" name="quantity" ng-model="deliveries[$index].quantity" class="form-control" placeholder="Quantidade" min="1">
-                    </div>
-                    <div class="col-sm-2 filters">
-                        <p>Nome</p>
-                        <input type="text" name="name" ng-model="deliveries[$index].name" class="form-control" placeholder="Nome da Análise" uib-popover="Digite um nome para salvar esta análise. Futuramente será possível resgatá-la." popover-trigger="'mouseenter'">
-                    </div>
-                </div>
-                <div ng-show="fetching" class="text-center">
-                    <i class="fa fa-spinner fa-spin fa-3x"></i>
-                </div>
-                <span ng-if="errorEquipment" class="text-danger">{{errorMsgEquipment}}</span>
-                <br/>
-                <span ng-if="successEquipment" class="text-success">{{successMsgEquipment}}</span>
-                <button class="btn btn-primary center-block" style="margin-top:10px;" ng-disabled="analysing || analysisCA.$invalid || fetching">Analisar &raquo;</button>
-            </div>
-        </form>
-    </div>
-    <div class="col-sm-12">
-        <hr/>
-        <hr/>
-        <span ng-if="success" class="text-success h3">{{successMsg}}</span>
-        <br/>
-        <span ng-if="error" class="text-danger h3">{{errorMsg}}</span>
-        <div ng-if="!analysing">
-            <h3 class="text-center">Resultado</h3>
-            <canvas id="line" height="25" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride"></canvas>
+            </p>
+          </div>
+          <div class="col-sm-1 filters">
+            <p>Quantidade</p>
+            <input type="number" name="quantity" ng-model="deliveries[$index].quantity" class="form-control" min="1">
+          </div>
+          <div class="col-sm-2 filters">
+            <p>Nome</p>
+            <input type="text" name="name" ng-model="deliveries[$index].name" class="form-control" placeholder="Nome da Análise" uib-popover="Digite um nome para salvar esta análise. Futuramente será possível resgatá-la." popover-trigger="'mouseenter'">
+          </div>
         </div>
+        <div ng-show="fetching" class="text-center">
+          <i class="fa fa-spinner fa-spin fa-3x"></i>
+        </div>
+        <span ng-if="errorDelivery" class="text-danger">{{errorMsgDelivery}}</span>
+        <br/>
+        <span ng-if="errorEquipment" class="text-danger">{{errorMsgEquipment}}</span>
+        <br/>
+        <span ng-if="successEquipment" class="text-success">{{successMsgEquipment}}</span>
+        <button class="btn btn-primary center-block" style="margin-top:10px;" ng-disabled="analysing || analysisCA.$invalid || fetching">Analisar &raquo;</button>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="col-sm-12">
+    <hr/>
+    <hr/>
+    <span ng-if="success" class="text-success h3">{{successMsg}}</span>
+    <br/>
+    <span ng-if="error" class="text-danger h3">{{errorMsg}}</span>
+    <div ng-if="!analysing">
+      <h3 class="text-center">Resultado</h3>
+      <canvas id="line" height="25" class="chart chart-line" chart-data="data" chart-labels="labels" chart-series="series" chart-options="options" chart-dataset-override="datasetOverride"></canvas>
     </div>
+  </div>
+
 </div>

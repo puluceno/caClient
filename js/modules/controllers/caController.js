@@ -106,20 +106,30 @@ app.controller("caController", ['$scope', '$timeout', 'Http', function($scope, $
         $scope.updatingCA = true;
         Http.post("api/updateca", map)
             .then(function successCallback(data) {
-                $scope.updatingCA = false;
-                $scope.updateSuccess = true;
-                $scope.updateSuccessMsg = "CA atualizado!"
-                $timeout(function() {
-                    $scope.updateSuccess = false;
-                }, 15000);
-            }, function errorCallback(data) {
-                $scope.updatingCA = false;
-                $scope.updateError = true;
-                $scope.updateErrorMsg = "Falha ao atualizar o CA."
-                $timeout(function() {
-                    $scope.updateSError = false;
-                }, 15000);
-            })
+                    if (data == false) {
+                        $scope.updatingCA = false;
+                        $scope.updateError = true;
+                        $scope.updateErrorMsg = "Falha ao atualizar o CA."
+                        $timeout(function() {
+                            $scope.updateSError = false;
+                        }, 15000);
+                    } else {
+                        $scope.updatingCA = false;
+                        $scope.updateSuccess = true;
+                        $scope.updateSuccessMsg = "CA atualizado!"
+                        $timeout(function() {
+                            $scope.updateSuccess = false;
+                        }, 15000);
+                    }
+                },
+                function errorCallback(data) {
+                    $scope.updatingCA = false;
+                    $scope.updateError = true;
+                    $scope.updateErrorMsg = "Falha ao atualizar o CA."
+                    $timeout(function() {
+                        $scope.updateSError = false;
+                    }, 15000);
+                })
     };
 
     var self = this;

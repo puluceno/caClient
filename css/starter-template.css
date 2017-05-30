@@ -149,6 +149,10 @@ td {
         width: 1080px;
         margin: 30px auto;
     }
+    .center {
+        margin: auto;
+        width: 50%;
+    }
 }
 
 @media (min-width: 1440px) {
