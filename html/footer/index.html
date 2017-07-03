@@ -29,8 +29,12 @@
             <span>
                 Dados atualizados em:
             </span>{{lastUpdated}}
-            <button ng-if="!userCtrl.isUser()" class="btn btn-primary btn-xs hidden-xs" type="button" ng-disabled="databaseUpdating" ng-click="footerCtrl.updateDatabase()" ng-disabled="databaseUpdating">Atualizar agora!&raquo;</button>
-            <i class="fa fa-spinner fa-spin fa" ng-show="databaseUpdating"></i>
+            <!-- <button ng-if="!userCtrl.isUser()" class="btn btn-primary btn-xs hidden-xs" type="button" ng-disabled="databaseUpdating" ng-click="footerCtrl.updateDatabase()" ng-disabled="databaseUpdating">Atualizar agora!&raquo;</button> -->
+            <!-- <i class="fa fa-spinner fa-spin fa" ng-show="databaseUpdating"></i> -->
+            <button ng-if="userCtrl.isAdmin() && !backupReady" class="btn btn-primary btn-xs hidden-xs" type="button" ng-disabled="backingUp" ng-click="footerCtrl.generateBackup()">Gerar Backup &raquo;</button>
+            <span ng-if="backingUp">Esta operação leva vários minutos...</span>
+            <i class="fa fa-spinner fa-spin fa" ng-show="backingUp"></i>
+            <a class="btn btn-primary btn-xs hidden-xs" type="button" ng-if="backupReady" ng-href="{{footerCtrl.getBackup()}}" target="_self" download>Baixar Backup &raquo;</a>
         </div>
     </div>
 
